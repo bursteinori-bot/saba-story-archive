@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>סיפור חייו של יוסי קליין</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;800&family=Frank+Ruhl+Libre:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1B2A41;
+    --ink-2: #4A5A70;
+    --ink-3: #8493A8;
+    --glass: rgba(255,255,255,.55);
+    --glass-strong: rgba(255,255,255,.85);
+    --glass-border: rgba(255,255,255,.8);
+    --shadow-card: 0 12px 32px rgba(27,42,65,.10), inset 0 1px 0 rgba(255,255,255,.9);
+    --shadow-soft: 0 4px 14px rgba(27,42,65,.07);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: #EEF1F5;
+    color: var(--ink);
+    font-family: "Heebo", sans-serif;
+    line-height: 1.9;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, #F2F4F8 0%, #E9EDF2 40%, #EEF1F5 100%);
+  }
+  header { text-align: center; padding: 7rem 1.5rem 4.5rem; }
+  header .kicker {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 18px; border-radius: 999px;
+    background: var(--glass);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border); box-shadow: var(--shadow-soft);
+    color: var(--ink-2); font-size: .9rem; font-weight: 500;
+    letter-spacing: .06em; margin-bottom: 1.6rem;
+  }
+  header h1 { font-weight: 800; font-size: 2.8rem; margin: 0 0 .6rem; color: var(--ink); letter-spacing: -.01em; }
+  header p.subtitle { color: var(--ink-3); font-size: 1.05rem; margin: 0; font-weight: 300; }
+  main { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+  /* תוכן עניינים מקובע בצד ימין (RTL) */
+  nav.toc {
+    position: fixed;
+    top: 50%;
+    right: 28px;
+    transform: translateY(-50%);
+    width: 340px;
+    max-height: 82vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--glass);
+    backdrop-filter: blur(22px) saturate(1.4); -webkit-backdrop-filter: blur(22px) saturate(1.4);
+    border: 1px solid var(--glass-border); border-radius: 20px;
+    box-shadow: var(--shadow-card); padding: 1.3rem 1.4rem;
+    z-index: 100;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(27,42,65,.2) transparent;
+  }
+  nav.toc h2 {
+    margin: 0 0 .9rem; padding-bottom: .8rem;
+    font-size: 1rem; font-weight: 800; letter-spacing: 0; text-align: center;
+    color: var(--ink);
+    border-bottom: 1px solid rgba(27,42,65,.12);
+  }
+  nav.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+  nav.toc li { margin: 0; }
+  nav.toc li.toc-chapter { counter-increment: toc; }
+  nav.toc li.toc-category {
+    padding: .9rem .7rem .3rem;
+    font-size: .68rem; font-weight: 700; letter-spacing: .05em;
+    color: var(--ink-3); text-transform: none;
+    border-top: 1px solid rgba(27,42,65,.1);
+    margin-top: .4rem;
+  }
+  nav.toc li.toc-category:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+  nav.toc a {
+    display: flex; align-items: baseline; gap: .55em;
+    color: var(--ink-2); text-decoration: none; font-weight: 400;
+    font-size: .88rem; line-height: 1.5;
+    padding: .38rem .7rem; border-radius: 10px;
+    border-inline-end: 2px solid transparent;
+    transition: background .15s ease, color .15s ease;
+  }
+  nav.toc li.toc-chapter a::before {
+    content: counter(toc);
+    font-size: .7rem; font-weight: 600; color: var(--ink-3);
+    min-width: 1.1em; text-align: center;
+  }
+  nav.toc li.toc-prologue a::before {
+    content: "✦";
+    font-size: .7rem; font-weight: 600; color: var(--ink-3);
+    min-width: 1.1em; text-align: center;
+  }
+  nav.toc a:hover { background: var(--glass-strong); color: var(--ink); }
+  nav.toc a.active {
+    background: var(--glass-strong);
+    color: var(--ink); font-weight: 600;
+    border-inline-end-color: var(--ink);
+    box-shadow: var(--shadow-soft);
+  }
+  /* במסכים צרים - התוכן עניינים חוזר לזרימה הרגילה כקלף מעל הפרקים */
+  @media (max-width: 1360px) {
+    nav.toc {
+      position: static;
+      transform: none;
+      width: auto;
+      max-height: none;
+      margin: 0 auto 3rem;
+      padding: 1.8rem 2rem;
+      border-radius: 24px;
+    }
+  }
+  article.chapter {
+    position: relative;
+    max-width: 880px; margin-inline: auto;
+    background: var(--glass);
+    backdrop-filter: blur(22px) saturate(1.4); -webkit-backdrop-filter: blur(22px) saturate(1.4);
+    border: 1px solid var(--glass-border); border-radius: 24px;
+    box-shadow: var(--shadow-card); padding: 3rem 3rem 2.5rem; margin-bottom: 2.5rem;
+    scroll-margin-top: 2rem;
+  }
+  article.chapter.appendix { max-width: none; }
+  article.chapter .eyebrow {
+    display: inline-block; padding: 4px 14px; border-radius: 999px;
+    background: var(--glass-strong); border: 1px solid rgba(255,255,255,.9);
+    box-shadow: var(--shadow-soft); color: var(--ink-2);
+    font-size: .8rem; font-weight: 600; letter-spacing: .05em; margin-bottom: 1rem;
+  }
+  article.chapter h2 { font-weight: 800; font-size: 1.9rem; color: var(--ink); margin: 0 0 1.8rem; }
+  article.chapter p {
+    font-family: "Frank Ruhl Libre", serif; font-size: 1.2rem;
+    color: var(--ink); margin: 0 0 1.4rem; text-align: justify;
+  }
+  article.prologue p { font-style: normal; }
+  p.signature { color: var(--ink-3); font-size: 1rem !important; text-align: left !important; }
+  blockquote {
+    margin: 2rem 0; padding: 1rem 1.6rem;
+    border-inline-end: 3px solid var(--ink);
+    font-family: "Frank Ruhl Libre", serif; font-style: italic; font-size: 1.1rem;
+    color: var(--ink); background: var(--glass-strong);
+    border-radius: 12px; box-shadow: var(--shadow-soft);
+  }
+  .historical-note {
+    margin: 2rem 0; padding: 1.2rem 1.6rem;
+    background: rgba(27,42,65,.05); border: 1px solid rgba(27,42,65,.08);
+    border-radius: 14px; font-size: .95rem; color: var(--ink-2);
+  }
+  .historical-note strong { color: var(--ink); display: block; margin-bottom: .4rem; }
+  .questions {
+    margin: 2.2rem 0 0; padding: 1.2rem 1.6rem;
+    border: 1.5px dashed rgba(27,42,65,.18); border-radius: 14px;
+    font-size: .95rem; color: var(--ink-2);
+  }
+  .questions strong { color: var(--ink); display: block; margin-bottom: .4rem; font-weight: 600; }
+  /* הודעת טיוטה לסבא */
+  .draft-banner {
+    max-width: 880px; margin: 0 auto 2.5rem;
+    background: rgba(255,255,255,.55);
+    backdrop-filter: blur(18px) saturate(1.3); -webkit-backdrop-filter: blur(18px) saturate(1.3);
+    border: 1.5px dashed rgba(27,42,65,.28); border-radius: 20px;
+    padding: 1.5rem 1.8rem; box-shadow: var(--shadow-soft);
+  }
+  .draft-banner-title { font-weight: 800; font-size: 1.05rem; color: var(--ink); margin-bottom: .7rem; }
+  .draft-banner p {
+    font-family: "Heebo", sans-serif; font-size: .92rem; line-height: 1.8;
+    color: var(--ink-2); margin: 0 0 .6rem;
+  }
+  .draft-banner p:last-child { margin-bottom: 0; }
+  .draft-banner strong { color: var(--ink); }
+  /* אזור התייחסות של סבא בסוף כל פרק */
+  .grandpa-note {
+    margin-top: 2.4rem; padding: 1.3rem 1.5rem;
+    background: rgba(27,42,65,.04); border: 1.5px dashed rgba(27,42,65,.22);
+    border-radius: 16px;
+  }
+  .grandpa-note-label { font-weight: 700; font-size: .95rem; color: var(--ink); margin-bottom: .3rem; }
+  .grandpa-note-hint {
+    font-family: "Heebo", sans-serif; font-size: .8rem; color: var(--ink-3);
+    line-height: 1.6; margin-bottom: .8rem;
+  }
+  .grandpa-note-box {
+    min-height: 90px; padding: .8rem 1rem;
+    background: rgba(255,255,255,.7); border: 1px solid var(--glass-border);
+    border-radius: 12px; font-family: "Heebo", sans-serif; font-size: .92rem;
+    line-height: 1.7; color: var(--ink); outline: none;
+  }
+  .grandpa-note-box:focus { border-color: rgba(27,42,65,.35); background: #fff; }
+  .grandpa-note-box:empty::before {
+    content: attr(data-placeholder); color: var(--ink-3);
+  }
+  .grandpa-note-saved {
+    display: inline-block; margin-top: .5rem; font-size: .74rem; color: var(--ink-3);
+    opacity: 0; transition: opacity .3s ease;
+  }
+  .grandpa-note-saved.show { opacity: 1; }
+  /* במסך רחב - התוכן ממורכז בשטח שבין התפריט (ימין) להערות השוליים (שמאל) */
+  @media (min-width: 1361px) {
+    main {
+      width: min(1100px, calc(100vw - 704px));
+      max-width: none;
+      margin-inline-start: calc(380px + max(0px, (100vw - 1804px) / 2));
+      margin-inline-end: 0;
+    }
+  }
+  /* במסך רחב - הרקע ההיסטורי והשאלות עוברים לשוליים השמאליים, צמודים לפרק שלהם.
+     המיקום האנכי נשלט ב-JS (transform: translateY) כדי "לרחף" עם הגלילה
+     ולעצור בתחתית הפרק, בלי לצאת מתחומו כלפי מעלה או מטה. */
+  @media (min-width: 1361px) {
+    .margin-notes {
+      position: absolute;
+      top: 0;
+      inset-inline-start: calc(100% + 22px); /* RTL: start=ימין → דוחף את הבלוק אל מעבר לקצה השמאלי של הכרטיס */
+      width: 270px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transform: translateY(3.2rem);
+      will-change: transform;
+      transition: transform .05s linear;
+    }
+    .margin-notes .historical-note,
+    .margin-notes .questions {
+      margin: 0;
+      font-size: .84rem;
+      line-height: 1.75;
+      padding: 1rem 1.2rem;
+      backdrop-filter: blur(18px) saturate(1.3);
+      -webkit-backdrop-filter: blur(18px) saturate(1.3);
+    }
+    .margin-notes .historical-note {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-soft);
+    }
+    .margin-notes .questions {
+      background: rgba(255,255,255,.35);
+      border: 1.5px dashed rgba(27,42,65,.22);
+    }
+    .margin-notes .historical-note strong,
+    .margin-notes .questions strong { font-size: .78rem; letter-spacing: .04em; }
+  }
+  /* ---- נספחים ---- */
+  nav.toc li.toc-appendix a::before {
+    content: "◆";
+    font-size: .55rem; font-weight: 600; color: var(--ink-3);
+    min-width: 1.1em; text-align: center;
+  }
+  article.appendix p.appendix-intro {
+    font-family: "Heebo", sans-serif; font-size: .95rem; color: var(--ink-2);
+    text-align: start; line-height: 1.8; margin-bottom: 2rem;
+  }
+  /* תחנות המסע */
+  .route-line {
+    background: rgba(255,255,255,.5); border: 1px solid var(--glass-border);
+    border-radius: 16px; padding: 1.1rem 1.4rem 1.3rem; margin-bottom: 1rem;
+    box-shadow: var(--shadow-soft);
+  }
+  .route-name {
+    display: inline-block; padding: 2px 12px; border-radius: 999px;
+    background: rgba(27,42,65,.07); font-size: .78rem; font-weight: 600;
+    color: var(--ink-2); margin-bottom: 1rem;
+  }
+  .route-stops { display: flex; align-items: flex-start; }
+  .route-stops .stop {
+    display: flex; flex-direction: column; align-items: center; gap: .35rem;
+    text-decoration: none; min-width: 54px;
+  }
+  .route-stops .stop-dot {
+    width: 13px; height: 13px; border-radius: 50%;
+    background: #fff; border: 3px solid var(--ink);
+    transition: transform .15s ease;
+  }
+  .route-stops .stop:hover .stop-dot { transform: scale(1.35); }
+  .route-stops .stop-name {
+    font-size: .82rem; font-weight: 600; color: var(--ink-2); white-space: nowrap;
+  }
+  .route-stops .stop:hover .stop-name { color: var(--ink); }
+  .route-stops .leg {
+    flex: 1; height: 0; margin-top: 6px;
+    border-top: 2px dashed rgba(27,42,65,.3);
+  }
+  /* טבלת מקומות */
+  .places-title { font-size: 1.05rem; font-weight: 700; color: var(--ink); margin: 2.2rem 0 1rem; }
+  .places-table {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    background: rgba(255,255,255,.5); border: 1px solid var(--glass-border);
+    border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-soft);
+    font-family: "Heebo", sans-serif; font-size: .88rem;
+  }
+  .places-table th {
+    text-align: start; padding: .7rem 1.2rem;
+    background: rgba(27,42,65,.06); color: var(--ink);
+    font-size: .78rem; font-weight: 700; letter-spacing: .03em;
+  }
+  .places-table td {
+    padding: .6rem 1.2rem; color: var(--ink-2); line-height: 1.7;
+    border-top: 1px solid rgba(27,42,65,.07); vertical-align: top;
+  }
+  .places-table td.place-name { font-weight: 700; color: var(--ink); white-space: nowrap; }
+  @media (max-width: 600px) {
+    .route-stops .stop-name { font-size: .72rem; }
+    .places-table td.place-name { white-space: normal; }
+  }
+  /* ציר הזמן - ציר מרכזי, כרטיסי זכוכית לפי תקופות; כל האירועים פתוחים */
+  .timeline {
+    position: relative; display: grid;
+    grid-template-columns: 1fr 1fr; column-gap: 60px; row-gap: .9rem;
+    margin-top: .6rem;
+  }
+  .timeline::before {
+    content: ""; position: absolute; top: 14px; bottom: 8px;
+    inset-inline-start: calc(50% - 1px); width: 2px;
+    background: rgba(27,42,65,.18); border-radius: 2px;
+  }
+  .tl-era {
+    grid-column: 1 / -1; display: flex; justify-content: center;
+    position: relative; z-index: 1; margin: .9rem 0 .1rem;
+  }
+  .timeline .tl-era:first-child { margin-top: 0; }
+  .tl-era-pill {
+    background: var(--ink); color: #fff;
+    border-radius: 999px; padding: 4px 18px;
+    font-size: .78rem; font-weight: 700; letter-spacing: .02em;
+    box-shadow: var(--shadow-soft);
+  }
+  .tl-era-pill small { font-weight: 400; font-size: .7rem; color: rgba(255,255,255,.65); margin-inline-start: .3em; }
+  .tl-item {
+    position: relative;
+    background: rgba(255,255,255,.55); border: 1px solid var(--glass-border);
+    border-radius: 14px; padding: .65rem .9rem .7rem;
+    box-shadow: var(--shadow-soft);
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .tl-item.tl-a { grid-column: 1; }
+  .tl-item.tl-b { grid-column: 2; }
+  /* נקודה על הציר + קו מחבר מהכרטיס אליה */
+  .tl-item::before {
+    content: ""; position: absolute; top: .8rem; z-index: 1;
+    width: 11px; height: 11px; border-radius: 50%;
+    background: #fff; border: 2.5px solid var(--ink);
+    inset-inline-end: -38px;
+  }
+  .tl-item::after {
+    content: ""; position: absolute; top: calc(.8rem + 7px);
+    width: 22px; height: 1.5px; background: rgba(27,42,65,.22);
+    inset-inline-end: -22px;
+  }
+  .tl-item.tl-b::before { inset-inline-end: auto; inset-inline-start: -38px; }
+  .tl-item.tl-b::after { inset-inline-end: auto; inset-inline-start: -22px; }
+  .tl-head { display: flex; align-items: center; gap: .5rem; }
+  .tl-date { font-weight: 800; font-size: .84rem; color: var(--ink); unicode-bidi: plaintext; }
+  .tl-place {
+    display: inline-block; padding: 0 9px; border-radius: 999px;
+    background: rgba(27,42,65,.07); font-size: .68rem; color: var(--ink-2);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45%;
+  }
+  .tl-event {
+    font-size: .78rem; line-height: 1.55; color: var(--ink-2); margin-top: .2rem;
+  }
+  .tl-item.tl-key { background: var(--ink); border-color: var(--ink); }
+  .tl-item.tl-key:hover { background: var(--ink); }
+  .tl-item.tl-key::before { background: var(--ink); }
+  .tl-item.tl-key .tl-date, .tl-item.tl-key .tl-event { color: #fff; }
+  .tl-item.tl-key .tl-place { background: rgba(255,255,255,.18); color: #fff; }
+  .tl-item.tl-uncertain .tl-date::after {
+    content: " · טעון אימות"; font-weight: 500; font-size: .68rem; color: var(--ink-3);
+  }
+  @media (max-width: 700px) {
+    .timeline { display: block; }
+    .timeline::before { inset-inline-start: 5px; }
+    .tl-era { margin: 1.1rem 0 .8rem; }
+    .tl-item, .tl-item.tl-a, .tl-item.tl-b { margin-bottom: .9rem; margin-inline-start: 1.6rem; }
+    .tl-item::before, .tl-item.tl-b::before { inset-inline-end: auto; inset-inline-start: -26px; }
+    .tl-item::after, .tl-item.tl-b::after { inset-inline-end: auto; inset-inline-start: -16px; width: 16px; }
+  }
+  /* עץ משפחתי */
+  .family-tree { margin: 1.2rem 0 .6rem; }
+  .family-tree svg { width: 100%; height: auto; display: block; }
+  .family-tree line { stroke: rgba(27,42,65,.3); stroke-width: 1.4; }
+  .family-tree line.dash { stroke-dasharray: 4 4; }
+  .family-tree .tn rect { fill: rgba(255,255,255,.75); stroke: rgba(27,42,65,.3); stroke-width: 1.1; }
+  .family-tree .tn text { font: 600 12px "Heebo", sans-serif; fill: var(--ink-2); }
+  .family-tree .strong rect { fill: rgba(255,255,255,.95); stroke: var(--ink); stroke-width: 1.7; }
+  .family-tree .strong text { fill: var(--ink); }
+  .family-tree .key rect { fill: var(--ink); stroke: none; }
+  .family-tree .key text { fill: #fff; font-weight: 700; }
+  .family-tree .unk rect { stroke-dasharray: 4 3; fill: rgba(255,255,255,.35); }
+  .family-tree .unk text { fill: var(--ink-3); }
+  .family-tree a { cursor: pointer; }
+  .family-tree a:hover rect { stroke: var(--ink); stroke-width: 2; }
+  .family-tree text.lbl { font: 500 10.5px "Heebo", sans-serif; fill: var(--ink-3); }
+  article.appendix p.tree-caption {
+    font-family: "Heebo", sans-serif; font-size: .8rem; color: var(--ink-3);
+    text-align: center; margin: 0 0 1.8rem;
+  }
+  /* כרטיסי דמויות */
+  .char-group-title { font-size: 1.05rem; font-weight: 700; color: var(--ink); margin: 2rem 0 1rem; }
+  .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (min-width: 1361px) { .char-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px) { .char-grid { grid-template-columns: 1fr; } }
+  .char-card {
+    background: rgba(255,255,255,.5); border: 1px solid var(--glass-border);
+    border-radius: 16px; padding: 1rem 1.2rem; box-shadow: var(--shadow-soft);
+    scroll-margin-top: 90px;
+    transition: background .3s ease, border-color .3s ease;
+  }
+  .char-card:target { border-color: var(--ink); background: var(--glass-strong); }
+  .char-card .char-name { font-weight: 700; color: var(--ink); margin-bottom: .2rem; }
+  .char-card .char-rel {
+    display: inline-block; padding: 1px 10px; border-radius: 999px;
+    background: rgba(27,42,65,.07); font-size: .72rem; color: var(--ink-2); margin-bottom: .4rem;
+  }
+  article.appendix .char-card p {
+    font-family: "Heebo", sans-serif; font-size: .88rem; line-height: 1.7;
+    color: var(--ink-2); margin: 0; text-align: start;
+  }
+  footer { text-align: center; padding: 3rem 1.5rem; color: var(--ink-3); font-size: .85rem; }
+  @media (max-width: 600px) {
+    header h1 { font-size: 2rem; }
+    article.chapter { padding: 2rem 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">ביוגרפיה משפחתית · חלק ראשון: 1922–1969</div>
+  <h1>סיפור חייו של יוסי קליין</h1>
+  <p class="subtitle">כפי שסיפר במילותיו, נאסף ונכתב באהבה</p>
+</header>
+
+<main>
+  <nav class="toc">
+    <h2>תוכן העניינים</h2>
+    <ol>
+      <li class="toc-category">פרולוג</li>
+      <li class="toc-prologue"><a href="#prologue">לילדיי ולנכדיי - מכתב מסבא</a></li>
+      <li class="toc-category">ביוגרפיה משפחתית · חלק ראשון: 1922–1969</li>
+      <li class="toc-chapter"><a href="#chapter-1">שני נהרות</a></li>
+      <li class="toc-chapter"><a href="#chapter-2">הבחורה מהמטרו</a></li>
+      <li class="toc-chapter"><a href="#chapter-3">איזה אושר - נתנו לי נשק</a></li>
+      <li class="toc-chapter"><a href="#chapter-4">ילד של משפחות אחרות</a></li>
+      <li class="toc-chapter"><a href="#chapter-5">הילד עם הציורים</a></li>
+      <li class="toc-chapter"><a href="#chapter-6">הארמון</a></li>
+      <li class="toc-chapter"><a href="#chapter-7">אחת בחודש, באוטובוס לפריז</a></li>
+      <li class="toc-chapter"><a href="#chapter-8">קומה רביעית בלי מעלית</a></li>
+      <li class="toc-chapter"><a href="#chapter-9">בניתי את עצמי לבד</a></li>
+      <li class="toc-chapter"><a href="#chapter-10">לאיזה כוכב הגעתי</a></li>
+      <li class="toc-category">נספחים</li>
+      <li class="toc-appendix"><a href="#appendix-map">תחנות המסע</a></li>
+      <li class="toc-appendix"><a href="#appendix-timeline">ציר הזמן</a></li>
+      <li class="toc-appendix"><a href="#appendix-characters">מי ומי - הדמויות</a></li>
+    </ol>
+  </nav>
+
+  <div class="draft-banner">
+    <div class="draft-banner-title">✍️ סבא יקר, קרא לפני הכל</div>
+    <p>זו <strong>טיוטה ראשונה בלבד</strong>. הסיפור עוד יעבור שכתובים רבים עד שנמצא יחד את הדרך הנכונה לספר אותו - באיזה קול לספר (בגוף ראשון, בקולך שלך, או בגוף שלישי), באיזה סדר, ובאיזה גוון. שום דבר כאן אינו סופי.</p>
+    <p>ההערות בשוליים - <strong>הקשר היסטורי</strong> ו<strong>שאלות פתוחות</strong> - נועדו לעזור לנו לדייק. בסוף כל פרק תמצא מקום להוסיף את ההערות שלך, לענות על השאלות, לתקן ולהשלים. כל מילה שלך חשובה.</p>
+  </div>
+
+  <article class="chapter prologue" id="prologue">
+    <span class="eyebrow">פתח דבר</span>
+    <h2>לילדיי ולנכדיי</h2>
+    <p>לכם, שלושת ילדיי,
+ולכם, שבעת נכדיי,</p>
+    <p>אם יום אחד תקראו את המילים האלה, דעו זאת תחילה: הייתם חלק מהותי מחיי. כל אחד מכם, בדרכו שלו, העניק משמעות לימיי - גם כשהדבר לא תמיד בא לידי ביטוי במילים.</p>
+    <p>לא הייתי הורה או סב מושלמים. לעתים חסרו לי המילים, הזמן והסבלנות. אך אהבה - מעולם לא חסרה. גם בשתיקה, גם בעייפות, היא הייתה שם.</p>
+    <p>הייתי רוצה שתזכרו אותי כמי שעשה כמיטב יכולתו. כמי שמנסה להנחיל ערכים פשוטים: כבוד, הגינות, טוב-לב והאומץ להיות מי שאתם. אם הצלחתי ללמד אתכם דבר אחד, אני מקווה שזהו הדבר: יש לכם ערך, מעצם היותכם קיימים.</p>
+    <p>לנכדים - שאולי לא הספקתי להכיר כפי שהייתי רוצה - דעו שהעתיד שלכם תמיד היה חשוב לי. גם כשכבר לא אהיה כאן, אני מאחל לכם חיים שבהם תעזו לאהוב, ללמוד, ליפול ולקום מחדש.</p>
+    <p>אם תחשבו עליי יום אחד, אין צורך שזה יהיה בעצב. חיוך, זיכרון או מחשבה חולפת - די בהם. משמעות הדבר תהיה שהשארתי חותם - לא בהיסטוריה של העולם, אלא בסיפור חייכם שלכם.</p>
+    <p>ועבורי, זה יהיה די והותר.</p>
+    <p class="signature">- יוסי קליין (במקור בצרפתית)</p>
+  </article>
+
+  <article class="chapter" id="chapter-1">
+    <span class="eyebrow">תקופה: שורשי המשפחה - בודפשט וביירות, תחילת המאה ה-20</span>
+    <h2>שני נהרות</h2>
+    <p>כל סיפור חיים מתחיל הרבה לפני הלידה. הסיפור של יוסי קליין מתחיל בשני קצוות של העולם היהודי, בשתי משפחות שלא ידעו זו על קיומה של זו - האחת על גדות הדנובה, השנייה על חוף הים התיכון - ושההיסטוריה תגלגל את שתיהן, בדרכים עקלקלות ולפעמים אכזריות, אל אותה ארץ קטנה ואל אותו סיפור.</p>
+    <p>מצד האב: משפחת קליין ההונגרית. דזירה ואליזבת קליין עזבו את הונגריה אחרי מלחמת העולם הראשונה, בסביבות 1925, והיגרו לצרפת. דזירה - &quot;דזירה זה דוד בהונגרית,&quot; יסביר יוסי לימים לנכדו - עבד במפעל רנו חמש-עשרה שנה, פועל יהודי-הונגרי בלב התעשייה הצרפתית, עד 1940. באותה שנה נכנסו לתוקף חוקי וישי נגד היהודים, ודלתות המפעל נסגרו בפניו.</p>
+    <p>בנם אדלברט - אלברט - נולד עוד בבודפשט, ב-31 בדצמבר 1922, ערב השנה החדשה, וגדל בצרפת. היו לו שתי אחיות, לילי ואדל, שני אחים, פאולו ורוז&#x27;ה, וחצי-אח מנישואיה הראשונים של אליזבת - גסטון. משפחה גדולה, צפופה, מהגרת, שעוד תצטרך את כל כושר ההישרדות שלה בשנים שיבואו.</p>
+    <p>ובקצה השני של הים: ביירות. שם חיו אסתר ויוסף דישי - הסבא והסבתא שיוסי לא יזכה להכיר לעולם, ושאת שמו של יוסף הוא נושא עד היום. יוסף דישי שימש תקופה מסוימת ראש הקהילה היהודית של לבנון, והשם עבר הלאה במשפחה כמו לפיד: ליוסי יש שלושה בני דודים נוספים שנקראים על שמו.</p>
+    <p>ומאחורי יוסף - סיפור שנשמע כמו אגדה, ושיוסי גילה אותו רק שנים רבות אחר-כך, בביקור אצל דוד זקן בבית אבות בקנדה: אבי המשפחה, דורות אחורה, שימש יועץ פיננסי של מלך מצרים. יום אחד קרא לו המלך ואמר לו לעזוב מיד - הוא שמע כמה מקנאים בו הסובבים, ובמיוחד בהיותו יהודי, וחשש לגורלו. היועץ שמע לעצת המלך שהעריך אותו, ארז ועבר ללבנון. כך הגיעה משפחת דישי לביירות.</p>
+    <blockquote>&quot;התחלנו לדבר איתו על החיים שלו, והוא סיפר לנו סיפורים על המשפחה שאנחנו לא הכרנו.&quot;</blockquote>
+    <p>וביירות של אותם ימים לא הייתה מקום רע להגיע אליו. &quot;ביירות,&quot; אומר יוסי, &quot;הייתה נחשבת עד 1975 לפנינה של המזרח התיכון.&quot; שם, בשנת 1932, נולדה דולי - בת הזקונים של אסתר ויוסף. קראו לה גם בת-שבע. היו לה שבע אחיות - בהן בלה, אודט, לואיז ואווה - ואח אחד, ויקטור. היא דיברה ערבית וצרפתית רהוטה, בת של עיר שבה השפות והדתות חיו זו לצד זו.</p>
+    <p>ילד בבודפשט וילדה בביירות. ביניהם - יבשת שלמה, מלחמת עולם שמתקרבת, וארץ אחת קטנה שאף אחד מהם עוד לא ראה.</p>
+    <aside class="margin-notes">
+    <div class="historical-note"><strong>הערת רקע היסטורי</strong>גל ההגירה של יהודי הונגריה מערבה אחרי מלחמת העולם הראשונה ופירוק האימפריה האוסטרו-הונגרית הביא עשרות אלפי יהודים לצרפת, שנזקקה לידיים עובדות בתעשייה. &quot;תקנון היהודים&quot; (Statut des Juifs) של משטר וישי מאוקטובר 1940 הדיר יהודים ממשרות ציבוריות ומענפי תעסוקה שלמים - הרקע לפיטוריו של דזירה מרנו. הקהילה היהודית של ביירות מנתה באמצע המאה כמה אלפי נפשות ושגשגה עד מלחמת האזרחים ב-1975. (להשלמה ואימות: זהות מלך מצרים - ראו שאלות פתוחות.)</div>
+    <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>מי היה מלך מצרים בסיפור (פארוק? פואד?) ובאיזה דור בדיוק מדובר - סבו של יוסף דישי? מה שמות שלוש האחיות הנוספות של דולי? מה עלה בגורל בני המשפחה שנשארו בלבנון?</div>
+    </aside>
+    <div class="grandpa-note">
+      <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
+      <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר במחשב הזה אוטומטית.</div>
+      <div class="grandpa-note-box" contenteditable="true" data-note-id="chapter-1"
+           data-placeholder="כתוב כאן..."></div>
+      <span class="grandpa-note-saved">✓ נשמר</span>
+    </div>
+  </article>
+
+  <article class="chapter" id="chapter-2">
+    <span class="eyebrow">תקופה: מלחמת העולם השנייה - פריז וצרפת החופשית, 1942–1944</span>
+    <h2>הבחורה מהמטרו</h2>
+    <p>יום אחד, ברכבת התחתית של פריז, ניגשה בחורה אל אלברט קליין ואמרה לו משפט אחד: אל תחזור הביתה היום. הערב יהיה איסוף של יהודים.</p>
+    <p>אלברט היה אז בן תשע-עשרה, בלונדיני, בעל עיניים בהירות - &quot;הוא לא נראה יהודי בכלל,&quot; יאמר עליו בנו לימים, &quot;יאלי, הנכדה, יש לה את אותן עיניים.&quot; הוא הבין מיד. הוא אסף את שתי אחיותיו, לילי ואדל, ועוד אח, ויצא לדרך דרומה - אל צרפת החופשית, שהגרמנים עוד לא כבשו.</p>
+    <p>הדרך דרומה עברה ברכבת, והרכבת עברה בליון. שם, במרכז צרפת, הציבו הגרמנים מחסום ובדקו את ניירותיהם של כל היורדים. אלברט נתן לאחיו הוראה אחת: לא ללכת אחד אחרי השני. להשתלב בתור לסירוגין - אחד כן, אחד לא. והגרמנים, שיטתיים, בדקו את הניירות של כל שני בתור: את זה שלפניהם ואת זה שאחריהם. ארבעה צעירים יהודים עברו תחת אפם של הבודקים, אחד-אחד, בלי שנבדק אף אחד מהם.</p>
+    <blockquote>&quot;אתה תופס את מה שקרה? זה כמו נס כזה.&quot;</blockquote>
+    <p>נותר הגבול עצמו - קו התיחום בין הצפון הכבוש לדרום. הם חצו אותו בלילה. ירד גשם, והגרמנים סיירו לאורך הקו עם כלבים. הגשם, כך מספרים, החליש את חוש הריח של הכלבים. אומרים שאחד הגרמנים העביר פנס ואולי אף ראה רגל או נעל - והם עברו. את הסיפורים האלה שמע יוסי מדודתו לילי; אביו לא הרבה לספר.</p>
+    <p>בפריז נשארו דזירה ואליזבת, ההורים. גם הם ידעו שמשהו עומד לקרות באותו ערב - והעדיפו להישאר בבית. מה שהציל אותם היה תושייתה של אישה אחת: שומרת הבניין, הקונסיירז&#x27;. כשדפקו בדלתה - לא גרמנים בעצם, אלא שוטרים צרפתים ששיתפו פעולה - ושאלו: &quot;את יודעת איפה הזוג קליין? אנחנו מחפשים אותם,&quot; ישבו דזירה ואליזבת באותו רגע ממש בסלון שלה, ספל קפה בידיהם. היא לא מצמצה: &quot;לא, לא. הם עזבו מזמן את הבית.&quot; והשוטרים הלכו.</p>
+    <p>הוריהם של דזירה ואליזבת - הדור שמעליהם - לא זכו לנס כזה. הם נתפסו. אין עקבות, אין תאריך, אין קבר. יודעים רק שנהרגו, ככל הנראה עוד על אדמת צרפת.</p>
+    <p>ויש עוד סיפור אחד מאותן שנים, שקצותיו נשארו באפלה. אדל, אחותו של אלברט, התאהבה בצרפתי שהשתייך למיליציה של וישי - מהצד הלא נכון של ההיסטוריה. האיש הזה הציל את חייה. אחרי המלחמה, כשצרפת עשתה חשבון עם משתפי הפעולה, הוא חוסל. אדל לא נישאה מעולם, ומעולם לא דיברה על זה.</p>
+    <blockquote>&quot;אתה מבין שכל משפט שאני אומר זה עוד קפיצה להיסטוריה.&quot;</blockquote>
+    <aside class="margin-notes">
+    <div class="historical-note"><strong>הערת רקע היסטורי</strong>האזהרה במטרו מתיישבת עם &quot;אקציית ולודרום ד&#x27;איבר&quot; (רַאפְל דו וֶל d&#x27;Hiv), 16–17 ביולי 1942 - המצוד הגדול על יהודי פריז, שבוצע בידי המשטרה הצרפתית ושמועות עליו דלפו מראש והצילו רבים. קו התיחום (Ligne de démarcation) חצה את צרפת עד נובמבר 1942, אז כבשו הגרמנים גם את הדרום. ה&quot;מיליס&quot; (Milice) הייתה מיליציה צרפתית פשיסטית ששיתפה פעולה עם הגסטפו; בטיהורים שאחרי השחרור (l&#x27;Épuration) הוצאו להורג אלפי משתפי פעולה.</div>
+    <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>מי היה האח הנוסף שברח דרומה (פאולו? רוז&#x27;ה? גסטון?) - ומה עבר על שאר האחים במלחמה? היכן שהו בדרום ואיך חיו עד השחרור? מי הדוד שאיבד את בנו (&quot;כל הדודים ניצלו חוץ מאחד&quot;)?</div>
+    </aside>
+    <div class="grandpa-note">
+      <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
+      <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר במחשב הזה אוטומטית.</div>
+      <div class="grandpa-note-box" contenteditable="true" data-note-id="chapter-2"
+           data-placeholder="כתוב כאן..."></div>
+      <span class="grandpa-note-saved">✓ נשמר</span>
+    </div>
+  </article>
+
+  <article class="chapter" id="chapter-3">
+    <span class="eyebrow">תקופה: מרסיי, חיפה, ירושלים - 1945–1953</span>
+    <h2>איזה אושר - נתנו לי נשק</h2>
+    <p>אחרי המלחמה מצא אלברט קליין, הנגר, את הייעוד המוזר והיפה ביותר שנגר יהודי יכול היה למצוא באותן שנים: הוא בנה מיטות לספינות המעפילים.</p>
+    <p>בנמל מרסיי, בשירות ההגנה, הוא התקין דרגשי עץ בבטן אוניות רעועות - &quot;כמו הסיפור של אקסודוס,&quot; יסביר יוסי - כדי שאלפי ניצולים יוכלו לשכב בהן בדרכם ארצה. לפעמים האוניות נתפסו בידי הבריטים, לפעמים עברו. שלוש שנים הוא בנה מיטות לאחרים, עד שבשנת 1948, כך במילותיו של בנו, &quot;נמאס לו לעשות מיטות והוא החליט לעלות בעצמו.&quot;</p>
+    <p>הוא הגיע לנמל חיפה בעיצומה של מלחמת העצמאות, בלי מילה של עברית. עוד באותו יום קיבל רובה ושובץ בצבא החדש, בגדוד דוברי הצרפתית של המח&quot;ל - מתנדבי חוץ לארץ.</p>
+    <blockquote>&quot;אתה לא יכול לתאר לעצמך איזה אושר. איך שירדתי - נתנו לי נשק להגן על מדינת ישראל.&quot;</blockquote>
+    <p>הילד שגורש עם אביו ממפעל רנו, הצעיר שחצה גבול בלילה גשום כדי שכלבים לא יריחו אותו - קיבל רובה ומדינה להגן עליה. שנים רבות אחר-כך העניק לו השגריר הישראלי בצרפת אות הוקרה על שירותו.</p>
+    <p>באותה שנה בדיוק נעה דרומה-צפונה תנועה מקבילה: דולי דישי, בת שבע-עשרה, עזבה את ביירות ועלתה לישראל. במשפחתה זה היה מעשה כמעט מופרך - נערה צעירה, בת זקונים, קמה לבדה ועוזבת את פנינת המזרח התיכון לטובת ארץ במלחמה. היא התנדבה לצבא. במהלך מלחמת העצמאות איבדה שלוש אצבעות ביד ימין. את הפיצויים שהוצעו לה סירבה לקבל - למה, איש אינו יודע עד היום. אולי זו הייתה רוח התקופה.</p>
+    <p>חייל דובר צרפתית מפריז וחיילת דוברת צרפתית מביירות נפגשו בישראל של מלחמת העצמאות. איך בדיוק - לא נדע; מן הסתם מישהו הכיר ביניהם, והצרפתית עשתה את השאר. בינואר 1950 הם נישאו, וב-2 באפריל 1951 נולד בירושלים בנם הבכור - יוסף, על שם אבי-אמו ראש הקהילה מביירות. יוסי.</p>
+    <p>הם גרו בירושלים, כנראה סמוך לאודט, אחותה של דולי, שהייתה נשואה וטיפלה בתינוקת - דינה. לרגע אחד קצר היה שם מעין בית: אב, אם, תינוק, דודה במרחק הליכה.</p>
+    <p>ב-1953 החליטו אלברט ודולי לעזוב את ישראל ולחזור לצרפת. למה? &quot;אינני יודע מדוע,&quot; כותב יוסי. זו אחת השאלות הפתוחות הגדולות של חייו - ההחלטה האחת שממנה השתלשל כל מה שבא אחר-כך.</p>
+    <aside class="margin-notes">
+    <div class="historical-note"><strong>הערת רקע היסטורי</strong>במסגרת המח&quot;ל (מתנדבי חוץ לארץ) שירתו במלחמת העצמאות כ-4,000 מתנדבים מכ-40 מדינות, ובהם מאות דוברי צרפתית. ההעפלה מנמלי דרום צרפת (מרסיי, סֶט - ממנו הפליגה &quot;אקסודוס&quot; ב-1947) הייתה נתיב מרכזי של ניצולי השואה ארצה בשנים 1945–1948.</div>
+    <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>דרך איזו מסגרת עלתה דולי (עליית הנוער? כפר גלעדי הוזכר בשיחה - מה היה שם)? מה עשתה בצבא? היכן בדיוק גרו בירושלים? והאם יש השערה למה עזבו ב-1953 - פרנסה? משפחה? הצנע?</div>
+    </aside>
+    <div class="grandpa-note">
+      <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
+      <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר במחשב הזה אוטומטית.</div>
+      <div class="grandpa-note-box" contenteditable="true" data-note-id="chapter-3"
+           data-placeholder="כתוב כאן..."></div>
+      <span class="grandpa-note-saved">✓ נשמר</span>
+    </div>
+  </article>
+
+  <article class="chapter" id="chapter-4">
+    <span class="eyebrow">תקופה: צרפת, 1953–1960 - משפחות אומנה, הגירושים, והפרידה מז&#x27;קי</span>
+    <h2>ילד של משפחות אחרות</h2>
+    <p>מהשנים שבהן הוריו חיו יחד, יוסי לא זוכר כמעט כלום. &quot;אני לא זוכר אותם ביחד יותר מדי, ואני לא זוכר שחייתי איתם.&quot; מגיל צעיר מאוד הושם במשפחות אומנה, וכמעט מדי שנה עבר לבית אחר, למשפחה אחרת, לכפר אחר. כשנשאל אם היה לו רע, הוא עונה בפשטות שמפתיעה:</p>
+    <blockquote>&quot;אני זוכר שלא היה לי רע. באמת לא. הייתי ילד מאוד חביב.&quot;</blockquote>
+    <p>אבל מיד אחר-כך מגיע המשפט השני, זה שמתחתיו תהום: &quot;עד גיל תשע לא ידעתי מה זה תא משפחתי.&quot; רוב המשפחות היו נוצריות, ובימי ראשון היו שולחים אותו איתן לכנסייה, למיסה. הוא דווקא נהנה - הוא אהב לשמוע את הכומר שר. איש לא טרח לספר לו שהוא יהודי. הוא גילה זאת רק בגיל תשע. ומהמעברים התכופים נשארה עוד צלקת שקטה: עד גיל חמש-עשרה לא נשארו לו חברים. &quot;כל החברים שלי היו זמניים. לא היו תנאים בשביל זה.&quot;</p>
+    <p>יום אחד, כשהוחזר הביתה לביקור - כנראה ליום ראשון - הציגו בפניו תינוק בן חודש: ז&#x27;קי, אחיך הקטן. &quot;אני זוכר שראיתי אותו בפעם הראשונה, מבלי להבין את המצב.&quot;</p>
+    <p>ואת הרגע שבו נגמרה המשפחה הרשמית שלו הוא זוכר במדויק. הוא היה בן שבע. מסדרון של בית משפט. מבעד לדלת - קולות הוריו מתווכחים. &quot;באותו יום, אבי קיבל את המשמורת עליי, ואמי את זו של ז&#x27;קי.&quot; שני אחים, שני הורים - כל אחד לקח אחד, כמו שמחלקים רכוש.</p>
+    <p>מאחורי הגירושים הסתתר סוד שיוסי יגלה רק כעבור שלושים ומשהו שנה: במסגרת מאבק הגירושים הודיעה דולי לאלברט שז&#x27;קי אינו בנו. היא צדקה - אבל את זהות האב האמיתי גילה יוסי רק בגיל ארבעים בערך, במקרה. &quot;זה סיפור אחר לגמרי,&quot; הוא אומר, ומבטיח: &quot;נגיע לזה.&quot;</p>
+    <p>בגיל תשע אסף אותו אביו סוף-סוף חזרה הביתה. ובאירוניה שרק החיים יודעים לייצר, דווקא ז&#x27;קי - הילד שנשאר עם האם - הושם גם הוא אצל משפחה: אצל שכנים, קרוב מאוד לבית האב. &quot;זה כמו רוטשילד אצלנו,&quot; מסביר יוסי לנכדו במשל שכונתי, &quot;השכנים ממול.&quot; כך יכול היה לראות את אחיו הקטן די בקביעות - בא לאבא, חוצה לשכנים, מוצא את ז&#x27;קי.</p>
+    <p>ואז הגיע יום אחד שנחתם בזיכרון כתמונה: אבא, אופנוע, והדרך לנמל התעופה של פריז. &quot;שם ראיתי שוב את ז&#x27;קי בפעם האחרונה.&quot; דולי, שלא הצליחה לגדל אותו, שלחה את בנה בן החמש לישראל - אל אחותה לואיז, אל החווה שלה במושב משמרת. הילד הקטן עלה למטוס, ויוסי חזר הביתה על האופנוע של אבא, אח יחיד שוב.</p>
+    <aside class="margin-notes">
+    <div class="historical-note"><strong>הערת רקע היסטורי</strong>השמת ילדים במשפחות אומנה כפריות (nourrice, familles d&#x27;accueil) הייתה נפוצה מאוד בצרפת של שנות החמישים בקרב משפחות מהגרים בקשיים כלכליים או משפחתיים; ילדי הערים נשלחו לכפרים, לעיתים במרחק שעות מהבית, והקשר עם ההורים הצטמצם לביקורים נדירים.</div>
+    <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>באילו אזורים/כפרים היו משפחות האומנה? האם זכור לו שם של משפחה אחת לפחות? מתי בדיוק נשלח ז&#x27;קי לישראל (יוסי בן ~9–10?), והאם מישהו ליווה אותו בטיסה?</div>
+    </aside>
+    <div class="grandpa-note">
+      <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
+      <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר במחשב הזה אוטומטית.</div>
+      <div class="grandpa-note-box" contenteditable="true" data-note-id="chapter-4"
+           data-placeholder="כתוב כאן..."></div>
+      <span class="grandpa-note-saved">✓ נשמר</span>
+    </div>
+  </article>
+
+  <article class="chapter" id="chapter-5">
+    <span class="eyebrow">תקופה: בית הספר הכפרי, גיל 7–8 - היום האחרון של שנת הלימודים</span>
+    <h2>הילד עם הציורים</h2>
+    <p>יש רגעים שאדם נושא איתו שבעים שנה, והם לא מתעמעמים אלא מתחדדים. &quot;אני שומר זיכרון ילדות מדויק מאוד, נטוע עמוק בתוכי,&quot; כותב יוסי. זה קרה ביום האחרון של שנת הלימודים, לפני החופש הגדול, בבית הספר של הכפר.</p>
+    <p>בדרך הביתה נהגו הילדים להציק לתלמידים אחרים, ולרוב לילד אחד - ילד צעיר ממוצא אפריקאי, השונה היחיד בנוף הכפרי. יוסי לא צפה מהצד; הוא היה שם, עם החבר&#x27;ה. הוא היה ילד חזק - &quot;לא היו מתעסקים איתי, הייתי נכנס בו בקלות, גדול, קטן&quot; - ובחבורה של ילדים, הכוח יודע למצוא לעצמו חלש.</p>
+    <p>באותו יום אחרון צעד הילד לתומו, כשכמה בנים פתחו את ילקוטו והפכו אותו. דפים עפו באוויר, מסתחררים על הכביש הכפרי.</p>
+    <p>יוסי הרים אחד מהם.</p>
+    <blockquote>&quot;אני זוכר כמו היום: אני מסתכל, ואני רואה ציורים מקסימים, יפים, שאני לא הייתי מסוגל לצייר ככה. ואני מסתכל עליו, ואני אומר - מה, הוא עשה את זה?&quot;</blockquote>
+    <p>מה שקרה אז לקח שנייה אחת, והוא זוכר אותה כל חייו: &quot;בתוך שנייה הפכתי את עצמי.&quot; הילד שהצטרף למכות התחיל פתאום לצעוק על חבריו שיפסיקו, הבריח אותם, התכופף ועזר לילד המבוהל לאסוף את הדפים חזרה לילקוט. &quot;נבוך כולו, הוא הודה לי בתדהמה - ונפרדנו.&quot; זה היה היום האחרון של הלימודים. הוא לא ראה אותו שוב מעולם.</p>
+    <p>מה עובר בראשו של ילד בן שבע ברגע כזה? יוסי משחזר את השאלות כלשונן: &quot;מה אני עושה? למה אני מרביץ לו? מה הוא עושה לי בעצם? איזה דברים יפים יש לו.&quot; ואז, במשפט שמסכם את כל הפרק הזה של חייו: &quot;ילד יכול לחשוב, כמה שניות.&quot;</p>
+    <p>ומאותן כמה שניות יצאה החלטה שנשארה לתמיד. במילותיו הכתובות: &quot;ברגע ההוא, למרות גילי, החלטתי להביט באנשים לא על פי מראם, אלא לשפוט אותם על פי מעשיהם.&quot;</p>
+    <p>ילד שאיש לא לימד אותו מוסר - לא בית, לא קהילה, אף אחד - ניסח לעצמו, לבד על כביש כפרי מכוסה ציורים, את הצו המוסרי שילווה אותו כל החיים.</p>
+    <aside class="margin-notes">
+    <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>מה צויר בדפים - הוא זוכר ציור אחד מהם? באיזה כפר זה היה? והאם יש עוד רגעים מאותם בתי ספר כפריים שנחקקו בו?</div>
+    </aside>
+    <div class="grandpa-note">
+      <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
+      <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר במחשב הזה אוטומטית.</div>
+      <div class="grandpa-note-box" contenteditable="true" data-note-id="chapter-5"
+           data-placeholder="כתוב כאן..."></div>
+      <span class="grandpa-note-saved">✓ נשמר</span>
+    </div>
+  </article>
+
+  <article class="chapter" id="chapter-6">
+    <span class="eyebrow">תקופה: מעון הילדים של אוז&quot;ה, גיל 8–9 (~1959–1960)</span>
+    <h2>הארמון</h2>
+    <p>בכל ימי שישי היה ריח של שניצל.</p>
+    <p>זה אחד הפרטים הראשונים שיוסי שולף כשהוא מדבר על השנה ההיא - השנה החשובה של ילדותו, כהגדרתו: &quot;זה קטע חשוב בחיים שלי, מפני שפה פתאום גיליתי שאני יהודי. קודם כל.&quot;</p>
+    <p>אביו רשם אותו למעון ילדים של ארגון אוז&quot;ה - ארגון יהודי שאסף אחרי המלחמה ילדים שנותרו בלי הורים, יתומי שואה. המעון שכן בארמון. ארמון אמיתי - &quot;ארמון של איזו מלכה,&quot; כך סופר לילדים - שהארגון קנה ושיכן בו עשרים-שלושים ילדים וילדות.</p>
+    <p>והילד שגדל בבתים נוצריים, שהלך למיסה בימי ראשון ונהנה משירת הכומר, מצא את עצמו בן-לילה בעולם הפוך:</p>
+    <blockquote>&quot;מיום ליום - הייתי בבתים של נוצרים, ופתאום שמים אותי בארמון כזה, עם עשרים-שלושים ילדים, ומדברים איתי על יהדות. מה זה יהדות?&quot;</blockquote>
+    <p>בבוקר הלכו כולם יחד לבית הספר, אחר הצהריים חזרו לארמון והכינו שיעורים יחד, ובערב ישנו בחדרים משותפים - עשרה ילדים בחדר, מיטות זו לצד זו. בשביל ילד שעבר בין משפחות זרות כל חייו, הצפיפות הזאת לא הייתה עונש. היא הייתה גן עדן. &quot;איזה כיף,&quot; מסכם נכדו בשיחה, ויוסי מאשר: כיף.</p>
+    <p>היו שיעורי עברית ראשונים. היו שיעורי תנ&quot;ך - &quot;פתאום אני שומע על דוד וגוליית, שלמה, שמואל. מי אלה?&quot; - והסיפורים האלה, שנשמעו לו כמו אגדות מעולם אחר, סיקרנו אותו באמת. היה כדורגל, היו משחקים, היו חברים - &quot;פתאום יש לי הרבה חברים מסביב, חברות גם&quot; - והיה משהו נוסף, מין אווירה שהוא מזהה רק בדיעבד:</p>
+    <blockquote>&quot;אני זוכר את ההווי הזה - הווי מין ישראלי כזה. עולם חדש לגמרי. מה אני עושה פה? אבל טוב לי. וואו, טוב לי.&quot;</blockquote>
+    <p>הילדים סביבו היו ברובם יתומים של ההיסטוריה - ילדי שואה, ומי שנולדו מיד אחריה לתוך משפחות שבורות. &quot;אל תשכח שאני יליד 51&#x27;,&quot; הוא אומר, &quot;חמש שנים אחרי מלחמת העולם השנייה.&quot; הוא לא היה יתום, אבל בארמון הזה, בין הילדים האלה, מצא בפעם הראשונה את מה שהמשפחות האומנות לא נתנו: שייכות.</p>
+    <p>ואז זה נגמר, באותה פתאומיות שבה התחיל. &quot;יום אחד אבא שלי בא ולקח אותי.&quot; אלברט התחתן עם תרז, שכר דירה לא רחוק משם - ולקח את בנו לגור איתם. ילדים אחרים היו מאושרים לחזור לבית עם אבא. יוסי מדד את זה אחרת, ובחר לתיאור הרגע מילה מפתיעה:</p>
+    <blockquote>&quot;כשהוא התחתן עם תרז - בשבילי זו הייתה ירידה.&quot;</blockquote>
+    <p>ירידה. כמו מי שיורד מהארץ. הוא עזב את המקום היחיד שבו הרגיש עולה.</p>
+    <aside class="margin-notes">
+    <div class="historical-note"><strong>הערת רקע היסטורי</strong>אוז&quot;ה (OSE - Œuvre de Secours aux Enfants, &quot;אגודת סעד הילדים&quot;) הוא ארגון יהודי שנוסד ב-1912 וכיום פועל בצרפת; במלחמה הציל אלפי ילדים יהודים במסתור, ואחריה הפעיל עשרות בתי ילדים בטירות ובאחוזות ברחבי צרפת עבור יתומי השואה - המפורסם שבהם בטירת אנדלי (Château de Vaucelles ואחרים). ילדים שהוריהם חיו אך לא תפקדו התקבלו גם הם. איתור הארמון הספציפי - משימה לפגישה הבאה.</div>
+    <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>היכן היה הארמון (אזור פריז? שם המקום?) - אפשר לנסות לזהות יחד מתוך רשימת בתי הילדים של אוז&quot;ה. האם זוכר שמות של מדריכים או חברים משם? כמה זמן היה שם בסך הכול - שנה אחת?</div>
+    </aside>
+    <div class="grandpa-note">
+      <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
+      <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר במחשב הזה אוטומטית.</div>
+      <div class="grandpa-note-box" contenteditable="true" data-note-id="chapter-6"
+           data-placeholder="כתוב כאן..."></div>
+      <span class="grandpa-note-saved">✓ נשמר</span>
+    </div>
+  </article>
+
+  <article class="chapter" id="chapter-7">
+    <span class="eyebrow">תקופה: הביקורים אצל דולי - מגיל ~10 ואילך</span>
+    <h2>אחת בחודש, באוטובוס לפריז</h2>
+    <p>בית המשפט הצרפתי קבע: ביקור אצל האם פעם בחודש. וכך, פעם בחודש, היה ילד בן עשר עולה לבדו על אוטובוס בפרוור של פריז, מחליף קווים בביטחון של נוסע ותיק - &quot;הסתדרתי מצוין עם החלפת הקווים&quot; - ונוסע אל הרובע ה-17.</p>
+    <p>שם, בדירה זעירה, חיה דולי עם בן זוגה ז&#x27;ילבר, מורה בבית ספר יסודי. &quot;לא ידעתי להעריך אותו כראוי,&quot; כותב יוסי בכנות של מי שמסתכל אחורה. ילדים משותפים לא היו להם.</p>
+    <p>על היחסים עם אמו הוא מדבר בלי כחל וסרק: &quot;יחסים די קרים. היא לא גידלה אותי.&quot; וכשמבקשים הסבר, הוא עונה במשפט שיש בו יותר השלמה מכעס: &quot;כנראה שלא הייתה להם סבלנות בשבילי.&quot;</p>
+    <p>אבל בתוך הקרירות הזאת היה טקס אחד חם, שחוזר בסיפוריו שוב ושוב: הקולנוע. ארוחת ערב, ואז סרט - או טיול ברחובות פריז, להביט בחלונות הראווה. טלוויזיות עוד לא היו; הקולנוע היה החלון היחיד לעולם. דולי לא ברֵרה סרטים לפי גיל:</p>
+    <blockquote>&quot;ראיתי סרטים של מבוגרים. באמת של מבוגרים. אבל זה חיזק אותי.&quot;</blockquote>
+    <p>ומהעשרות ההן של ערבי קולנוע עם אמא צמחה תכונה שמלווה אותו עד היום, והוא גאה בה כמו בכישרון: היכולת לקרוא סרט. &quot;אני רואה סרט ואני מבין את התוכן שלו מהר מאוד. אני מנחש בקלות את הסוף. זו ממש תכונה שיצאה לי משם.&quot; ועיקרון נלווה, עיקש: לעולם לא לצאת מסרט באמצע. קרה לו רק פעם אחת בחיים.</p>
+    <p>זו תמונה ששווה להתעכב עליה: אישה שאיבדה שלוש אצבעות במלחמה אחת ואת שני בניה למסירות אחרות, וילד שרואה אותה יום אחד בחודש - יושבים יחד בחושך של אולם קולנוע פריזאי, בלי הרבה מילים, וצופים בסיפורים של אחרים. אולי כך הם ידעו להיות יחד: לא פנים אל פנים, אלא כתף אל כתף, מול מסך.</p>
+    <p>דולי נשארה בפריז כל חייה. לימים עברה לטולוז שבדרום צרפת, ושם נפטרה.</p>
+    <aside class="margin-notes">
+    <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>האם זכור לו סרט אחד ספציפי שראה איתה? (זה יכול להיות עוגן יפהפה לסצנה.) מתי ראה את דולי בפעם האחרונה? האם ז&#x27;ילבר הוא &quot;המורה&quot; שדולי נישאה לו בהמשך, ומה שם משפחתו?</div>
+    </aside>
+    <div class="grandpa-note">
+      <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
+      <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר במחשב הזה אוטומטית.</div>
+      <div class="grandpa-note-box" contenteditable="true" data-note-id="chapter-7"
+           data-placeholder="כתוב כאן..."></div>
+      <span class="grandpa-note-saved">✓ נשמר</span>
+    </div>
+  </article>
+
+  <article class="chapter" id="chapter-8">
+    <span class="eyebrow">תקופה: תרז, פוטו והבית - 1960–1968</span>
+    <h2>קומה רביעית בלי מעלית</h2>
+    <p>את תרז הוא פגש לפני שידע שהוא אמור לפגוש אותה. יום אחד ביקש ממנו אביו ללכת לאסוף את הדודה אדל מתחנת האוטובוס של פונטו-קומבו. לצד אדל ירדה מהאוטובוס אישה זרה, שהצטרפה להליכה הביתה ושאלה אותו שאלות רבות מדי. &quot;הייתה לי תחושת בטן מוזרה,&quot; הוא כותב. &quot;הבנתי שזה לא היה מקרה שאבי ביקש ממני ללכת לאסוף אותה.&quot; אדל ותרז עבדו יחד כתופרות במפעל; אדל היא שהכירה אותה לאלברט. הילד בן התשע הבין באותה הליכה רגלית שגורלו הוכרע.</p>
+    <p>אלברט ותרז נישאו ב-1960, והשלושה עברו לפוטו (Puteaux), פרוור ממערב לפריז. את הדירה יוסי מתאר בדיוק של מודד: קומה רביעית בלי מעלית. שירותים במסדרון הקומה, משותפים. מקלחת - אין. הסלון שימש חדר שינה להורים, והמבואה - הכניסה לדירה - הייתה חדרו של יוסי. שם, במעבר שבין הדלת לסלון, הוא גר שמונה שנים, עד 1968.</p>
+    <p>&quot;שנות המגורים המשותפים עם תרז ועם אבי היו קשות,&quot; הוא כותב, &quot;רצף של מריבות ותלונות.&quot; בעל-פה הוא מוסיף את הקצב: &quot;היא אומרת משהו, מעצבנת אותו, הוא לאט-לאט מתחמם - ואופ. הייתי סופר: כמה זמן ייקח עד שיריבו. שתי דקות, שלוש דקות.&quot; לפעמים זה נגמר במכות. גם הוא חטף - כמה פעמים, לעיתים עם חגורה. &quot;הייתי סובל בלי בעיה. הבנתי שאני מעצבן אותו.&quot; ואז, בלי להתבלבל, ההסתייגות ההיסטורית: &quot;אל תשכח את התקופה. היום זה בלתי אפשרי - אז זה היה מקובל.&quot;</p>
+    <p>ותרז עצמה? כאן הסיפור נהיה מורכב, והמורכבות הזאת מכבדת את המספר. היא הזכירה לו בקביעות, שוב ושוב, שהיא אינה אמו - &quot;היא בוכה מזה שהיא לא אמא שלי, אבל מזכירה לי&quot; - והוא לא התחבר אליה מעולם. אבל הוא גם ריחם עליה, וכשהוא מסביר למה, נפתח פתאום חלון לעולם שלם: תרז נולדה במרוקו ולא זכתה ליום לימודים אחד. כשפגשה את אלברט לא ידעה קרוא וכתוב.</p>
+    <blockquote>&quot;ניסיתי לעזור לה, אך איבדתי סבלנות במהירות. למרבה המזל, היא מצאה מורה זקן לצרפתית שהצליח ללמד אותה לקרוא.&quot;</blockquote>
+    <p>הנער שניסה ללמד את אמו החורגת לקרוא ואיבד סבלנות - ושמח בשבילה כשמישהו אחר הצליח. מדי פעם הייתה עוזבת את הבית; אלברט, &quot;גבר יפה תואר שמעולם לא נשאר לבד לאורך זמן,&quot; לא דאג במיוחד. היא תמיד חזרה.</p>
+    <p>ובתוך כל זה - בית הספר, שהיה בעיניו בעיקר מקום משעמם. חוץ מהיסטוריה, צרפתית וכתיבה, שום דבר לא עניין אותו, והוא פיתח שיטה משלו: בכיתה הצרפתית דירגו את התלמידים מהראשון עד האחרון, ויוסי כיוון בקפידה למקום אחד לפני האחרון. לא אחרון - אחד לפני.</p>
+    <p>עד שהתערב דזירה, הסבא ההונגרי הגבוה. יוסי בא להראות לו את התעודה, ודזירה הביט בו מלמעלה, ישר בעיניים: אם בחודש הבא תהיה ראשון - או מבין הראשונים - אתן לך מאה פרנק. &quot;מאה פרנק זה היה כמו אלף שקל היום. הסתכלתי עליו ואמרתי: וואלה, כדאי.&quot; חודש אחר-כך הביא מקום שני. למה לא ראשון? &quot;לא רציתי להגיע למקום ראשון, שלא יבלבלו לי את המוח עוד פעם.&quot; דזירה רתח, ריטן משהו בהונגרית לאלברט - אבל שילם. הכסף התגלגל למכולת שמתחת לבית, לסוכריות צרפתיות, &quot;סוכריות שאתה לא מכיר.&quot; וכשנגמרו המאה פרנק - חזר השעמום, וחזר הדירוג מלמטה.</p>
+    <p>כי המורים דווקא ראו. אחד מהם עצר יום אחד את אלברט ואמר לו, על סמך חיבור שהודפס בבית הספר: &quot;הבן שלך יכול להיות סופר. אתם רק לא שמים לב.&quot; המשפט הזה נשאר תלוי באוויר של הסיפור הזה - ילד עם עיניים של סופר, שאיש לא שם לב אליו.</p>
+    <p>ב-1963 נוסף לדירה הצפופה דייר: דזירה עצמו. הסבא עבר לגור בחדרו של יוסי - כלומר במבואה - וישן במיטתו, ויוסי עבר למזרן על הרצפה. לדבר כמעט לא יכלו: דזירה, אחרי ארבעים שנה בצרפת, עדיין דיבר בעיקר הונגרית. סבא ונכד, מיטה ומזרן, מטר זה מזה ושפה שלמה ביניהם.</p>
+    <aside class="margin-notes">
+    <div class="historical-note"><strong>הערת רקע היסטורי</strong>פוטו (Puteaux) הייתה בשנות השישים פרוור פועלים אפרורי ממערב לפריז - היום שוכן בה מתחם העסקים לה-דפאנס. דירות ללא מקלחת ועם שירותים משותפים במסדרון היו הנורמה בבנייני פועלים ישנים בפריז ופרווריה עד שנות השבעים. יהדות מרוקו של דור תרז - במיוחד נשים בפריפריה - סבלה משיעורי אנאלפביתיות גבוהים; סיפורה אופייני לנשות דורה.</div>
+    <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>מאיפה במרוקו הגיעה תרז ומתי היגרה לצרפת? מה עלה בגורלה (עד מתי חיו היא ואלברט)? מתי נפטר דזירה, וכמה זמן גר איתם? האם נשאר החיבור ההוא מבית הספר או משהו אחר שכתב כילד?</div>
+    </aside>
+    <div class="grandpa-note">
+      <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
+      <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר במחשב הזה אוטומטית.</div>
+      <div class="grandpa-note-box" contenteditable="true" data-note-id="chapter-8"
+           data-placeholder="כתוב כאן..."></div>
+      <span class="grandpa-note-saved">✓ נשמר</span>
+    </div>
+  </article>
+
+  <article class="chapter" id="chapter-9">
+    <span class="eyebrow">תקופה: נעורים בפריז - צופים, ספרים, שומר הצעיר ובית מלאכה למעילים, ~1961–1968</span>
+    <h2>בניתי את עצמי לבד</h2>
+    <p>מהבית בפוטו היה צריך מפלט, ויוסי מצא לו כמה.</p>
+    <p>הראשון היה הצופים של צרפת - Scouts de France - שלוש שנים של יציאות לטבע, סלילת שבילים ביערות, לינה באוהלים. שם למד לשחות, ושם עברה על גופו הכשרה ספרטנית שהוא מספר עליה עד היום בחיוך: גם בחורף, גם במינוס עשר מעלות - מכנסיים קצרים. &quot;מת בקור,&quot; הוא מודה, ואז מוסיף את הפואנטה: &quot;אבל מאז הגוף שלי הסתגל. עד היום אני אוהב את הקור.&quot; בישראל של חמש מעלות, כשכולם סביבו מתלוננים שקר להם, הוא צוחק בשקט. וכדאי לדעת: מכנסיים ארוכים היו אז הרף של בגרות. &quot;ילד בצרפת של התקופה שלי - תמיד במכנסיים קצרים. בגיל ארבע-עשרה, כשעברתי סוף-סוף לארוכים, לג&#x27;ינס - זו הייתה חגיגה אמיתית. אתה יודע איזה כבוד זה?&quot;</p>
+    <p>המפלט השני היה הספרים. &quot;אף פעם לא הלכתי לישון בלי לקרוא. עד עכשיו, כמעט.&quot; הוא קרא הכול, ובעיקר את הגדולים - ויקטור הוגו, אמיל זולא, &quot;עלובי החיים&quot; - ספרים שילד בגילו לא אמור היה לקרוא. &quot;התקדמתי אולי שנתיים לפני כולם מבחינת ידע. כל פעם שהמורה דיבר על נושא - היסטוריה, ספרות - הייתי בעניינים, עונה, והיו שמים לב.&quot; וגם מוזיקה: בלי שאיש לימד אותו, ידע לזהות בשמיעה שזה מוצרט וזה בטהובן. &quot;באופן טבעי. לא יודע למה זה משך אותי.&quot;</p>
+    <p>ואז מגיע המשפט שהוא אולי המפתח לכל הפרק הזה, ואולי לכל הספר:</p>
+    <blockquote>&quot;אל תשכח שלא היו לי הורים או מורים שדחפו, שהבינו שאני אוהב את זה ואת זה. רק אני לבד הייתי. בניתי את עצמי לבד.&quot;</blockquote>
+    <p>והבנייה-לבד הזאת יכלה בקלות ללכת לכיוון אחר. הוא אומר את זה בעצמו, בלי שנשאל: &quot;יכולתי להיות גם פושע, בלי בעיה.&quot; אחרי בית הספר איש לא ידע איפה הוא. תקופה מסוימת הסתובב עם חבורה של פרחחים אמיתיים - צלצולים בדלתות, הצקות, &quot;אתה רואה מישהו עם מקל - נותנים לו מכה עם המקל. שטויות שאחר-כך אתה אומר: מה עשיתי?&quot; הוא גם ידע להרביץ, ולא פחד מאיש: &quot;לא היה חסר ללכת מכות. הייתי נכנס בו בקלות.&quot;</p>
+    <p>ואז, יום אחד, קרה שוב אותו דבר שקרה עם הילד והציורים - המבט מבחוץ על עצמו: &quot;חזרתי הביתה, ואני מסתכל ככה על עצמי, ואני אומר: לא טוב. לא טוב מה שאני עושה. אני צריך להפסיק עם זה, עם החברה האלה.&quot; והפסיק. בלי הורה שיעיר, בלי מורה שיזהיר. ילד ששופט את עצמו על פי מעשיו.</p>
+    <p>בסביבות גיל חמש-עשרה נכנס לחייו המוסד שסידר את הכול: השומר הצעיר בפריז. אביו רשם אותו - לבן דוד שלו היה שם תפקיד מדריך - ויוסי, שהגיע &quot;בחור מאוד אלים,&quot; מצא בתנועה הציונית את מה שחיפש בלי לדעת:</p>
+    <blockquote>&quot;התנועה הזאת חינכה אותי והעניקה לי את המטען החינוכי והאינטלקטואלי הראשון שלי. עד היום שמרתי על קשרים איתנים מאוד עם חלק מחברי התנועה.&quot;</blockquote>
+    <p>הקשר האחרון בשרשרת היה דווקא בית מלאכה. אלברט, שלא היה מרוצה מהציונים, שלח את בנו להתמחות אצל דודיו, שהחזיקו עסק למעילים בפריז. יוסי גזר בטנות והשתתף בהכנת המעילים, ובדיעבד הוא מדבר על התקופה הזאת כמו על אוניברסיטה: &quot;העבודה הזאת הקנתה לי משמעת מעשית ועצמאות. המגע עם בעלי המלאכה לימד אותי את ערכה של העבודה הידנית ואת ההקפדה על הפרטים. היא הכינה אותי לחיים שבהם הקפדנות והאחריות יהיו חיוניים.&quot; והיה לה יתרון נוסף, לא פחות חשוב: היא אפשרה לו להגיע לפעילות של השומר הצעיר בקביעות.</p>
+    <p>מכנסיים קצרים בשלג, עלובי החיים לאור מנורה, בטנות של מעילים, וקן של תנועת נוער ציונית. מהחומרים האלה בנה את עצמו הנער שאיש לא בנה.</p>
+    <aside class="margin-notes">
+    <div class="historical-note"><strong>הערת רקע היסטורי</strong>קן השומר הצעיר בפריז היה בשנות השישים מרכז חשוב לנוער יהודי, ושילב חינוך ציוני-חלוצי עם פעילות אינטלקטואלית; רבים מבוגריו עלו ארצה בסוף שנות השישים, ובמיוחד אחרי מלחמת ששת הימים (1967), שעוררה גל עלייה מצרפת. תעשיית הקונפקציה (בגדים ומעילים) הייתה ענף פרנסה יהודי מובהק בפריז, מרוכז ברבעים כמו סנטייה - לרוב עסקים משפחתיים קטנים.</div>
+    <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>מי היו הדודים בעלי עסק המעילים (מצד קליין?) והיכן בפריז היה בית המלאכה? מי מחברי השומר הצעיר נשאר חבר עד היום (שמות!)? האם מלחמת ששת הימים ב-67&#x27; השפיעה על ההחלטה לעלות?</div>
+    </aside>
+    <div class="grandpa-note">
+      <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
+      <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר במחשב הזה אוטומטית.</div>
+      <div class="grandpa-note-box" contenteditable="true" data-note-id="chapter-9"
+           data-placeholder="כתוב כאן..."></div>
+      <span class="grandpa-note-saved">✓ נשמר</span>
+    </div>
+  </article>
+
+  <article class="chapter" id="chapter-10">
+    <span class="eyebrow">תקופה: העלייה לישראל, 1968–1969</span>
+    <h2>לאיזה כוכב הגעתי</h2>
+    <p>ב-1968, אחרי שמונה שנים במבואה של הדירה בפוטו, ארז יוסי בן השבע-עשרה-שמונה-עשרה את חייו ועלה לישראל. הוא נולד בירושלים וחזר אליה כמעט זר - ילד צרפתי עם עברית ששרדה איכשהו מהארמון של אוז&quot;ה ומקן השומר הצעיר.</p>
+    <p>מהסיבות לעלייה הוא מונה אחת במפורש, והיא לב הסיפור: &quot;אחת מהסיבות - רציתי לראות את ז&#x27;קי.&quot; האח הקטן שנפרד ממנו בנמל התעופה של פריז, ילד בן חמש שנשלח לבדו למושב משמרת, היה עכשיו נער. שני האחים, שכל אחד מהם גדל אצל מי שלא ילדה אותו, עמדו להיפגש שוב אחרי כמעט עשור.</p>
+    <p>ובישראל חיכתה ליוסי תגלית שהוא מספר עליה כמו על נס, למרות - או בגלל - שהיא הדבר הפשוט בעולם. הוא הגיע לדודה לואיז, לחווה במושב, ואחר-כך לדודה אודט. ושם, ליד שולחן, ראה:</p>
+    <blockquote>&quot;אני רואה משפחה. אנשים יושבים, אוכלים ביחד, רבים, צוחקים. איפה אני נמצא? לאיזה כוכב הגעתי?&quot;</blockquote>
+    <p>הוא היה בן שבע-עשרה, וזו הייתה הפעם הראשונה בחייו שראה משפחה מבפנים. &quot;אתה יודע מתי הכרתי משפחה? משפחה - זאת אומרת ממש משפחה? רק שעליתי לארץ.&quot; כל מה שילדים אחרים לא היו מסוגלים אפילו להבחין בו - ארוחה משותפת, מריבה על שטויות, צחוק סביב שולחן - היה בעיניו פלא מכוכב אחר. הוא משווה את הרגע הזה בעצמו לרגע ההוא בארמון של אוז&quot;ה, כשגילה שהוא יהודי: עוד עולם שלם שהיה שלו לפי הדין, ושאיש לא הראה לו עד אז.</p>
+    <p>גם ההתנגשות עם הישראליות הייתה מיידית. &quot;חטפתי שוק כשהגעתי לארץ, עם הקללות.&quot; בצרפת שלו, מילים היו נשק קר: &quot;אם אתה אומר למישהו בצרפת מה שאומרים פה - אתה יכול לקבל סכין בלב. זו חתיכת קללה רצינית. פה בישראל זה כאילו כלום.&quot; הנער שידע להיכנס במכות על כבודו למד שבארץ החדשה מעליבים אחרת, וסולחים אחרת.</p>
+    <p>כאן, בשערי הארץ, נעצר בינתיים הסיפור שסבא הספיק לספר - על סף החיים הישראליים: הצבא, העבודה, סבתא, שלושת הילדים ושבעת הנכדים. &quot;תשמע, זה רק עד שעליתי לארץ, כן?&quot; אמר בסוף השיחה הראשונה, כמו מבטיח. יש עוד הרבה.</p>
+    <p>ורגע אחד מהעתיד ההוא כבר סופר, והוא שייך לכאן, כי הוא סוגר מעגל עם דולי ועם ביירות: לפני חתונתו עם סבתא הלך יוסי, כמקובל, לרב בתל מונד, עם עדים, להוכיח את יהדותו. דולי באה גם היא. הרב הביט בו ושאל: &quot;אשכנזי או ספרדי?&quot; - ויוסי, בן לאב מבודפשט ולאם מביירות, שגדל בצרפת שבה &quot;לא דיברו על זה,&quot; לא ידע מה לענות. &quot;אני יהודי,&quot; אמר. דולי צחקה. וכשהרב הקשה - &quot;איך אני יודע שאת יהודייה?&quot; - שלפה תשובה של ביירותית-פריזאית מהירת מחשבה, שהתגלגלה סביב שם משפחה שנשמע יהודי לגמרי והיה שייך דווקא לגוי אחד ממזרח צרפת. הרב הרים ידיים והפסיק לחפש. &quot;אתה מבין את הסיפורים? מצד אחד משגעים,&quot; צוחק יוסי. גם על סף הדת, המשפחה הזאת נכנסה בדלת של סיפור טוב.</p>
+    <aside class="margin-notes">
+    <div class="historical-note"><strong>הערת רקע היסטורי</strong>בעקבות מלחמת ששת הימים (יוני 1967) גאתה העלייה מצרפת ומארצות המערב; בשנים 1968–1969 עלו מצרפת אלפים, רבים מהם בוגרי תנועות נוער ציוניות. מושב משמרת שבשרון, ביתם של לואיז וז&#x27;קי, נוסד ב-1946.</div>
+    <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>איך היה המפגש עצמו עם ז&#x27;קי אחרי עשור - מה אמרו זה לזה? לאן הגיע יוסי קודם (קיבוץ? אולפן? צבא?) ומה עשה בשנה הראשונה? ולסיפור הרב - לוודא את פרטי &quot;זיגלמאיר&quot;: של מי היה השם, ומה בדיוק אמרה דולי?</div>
+    </aside>
+    <div class="grandpa-note">
+      <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
+      <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר במחשב הזה אוטומטית.</div>
+      <div class="grandpa-note-box" contenteditable="true" data-note-id="chapter-10"
+           data-placeholder="כתוב כאן..."></div>
+      <span class="grandpa-note-saved">✓ נשמר</span>
+    </div>
+  </article>
+
+  <article class="chapter appendix" id="appendix-map">
+    <span class="eyebrow">נספח א</span>
+    <h2>תחנות המסע</h2>
+    <p class="appendix-intro">שלושה מסלולים מתכנסים לארץ אחת: ענף קליין מבודפשט דרך פריז ומרסיי, ענף דישי ממצרים דרך ביירות, ויוסי - שנולד בירושלים, גדל בפריז וחזר ב-1968. לחיצה על תחנה מובילה לפרק המתאים.</p>
+    <div class="route-line">
+      <div class="route-name">מסלול משפחת קליין</div>
+      <div class="route-stops"><a class="stop" href="#chapter-1"><span class="stop-dot"></span><span class="stop-name">בודפשט</span></a><span class="leg"></span><a class="stop" href="#chapter-2"><span class="stop-dot"></span><span class="stop-name">פריז</span></a><span class="leg"></span><a class="stop" href="#chapter-2"><span class="stop-dot"></span><span class="stop-name">ליון</span></a><span class="leg"></span><a class="stop" href="#chapter-3"><span class="stop-dot"></span><span class="stop-name">מרסיי</span></a><span class="leg"></span><a class="stop" href="#chapter-3"><span class="stop-dot"></span><span class="stop-name">חיפה</span></a></div>
+    </div>
+    <div class="route-line">
+      <div class="route-name">מסלול משפחת דישי</div>
+      <div class="route-stops"><a class="stop" href="#chapter-1"><span class="stop-dot"></span><span class="stop-name">מצרים</span></a><span class="leg"></span><a class="stop" href="#chapter-1"><span class="stop-dot"></span><span class="stop-name">ביירות</span></a><span class="leg"></span><a class="stop" href="#chapter-3"><span class="stop-dot"></span><span class="stop-name">ישראל</span></a></div>
+    </div>
+    <div class="route-line">
+      <div class="route-name">מסעו של יוסי</div>
+      <div class="route-stops"><a class="stop" href="#chapter-3"><span class="stop-dot"></span><span class="stop-name">ירושלים</span></a><span class="leg"></span><a class="stop" href="#chapter-4"><span class="stop-dot"></span><span class="stop-name">פריז</span></a><span class="leg"></span><a class="stop" href="#chapter-10"><span class="stop-dot"></span><span class="stop-name">ישראל</span></a></div>
+    </div>
+    <h3 class="places-title">מקומות מרכזיים</h3>
+    <table class="places-table">
+      <thead><tr><th>מקום</th><th>ההקשר בסיפור</th></tr></thead>
+      <tbody>
+        <tr><td class="place-name">בודפשט</td><td>עיר הולדת אלברט</td></tr>
+        <tr><td class="place-name">ביירות</td><td>עיר הולדת דולי; &quot;פנינת המזרח התיכון&quot; עד 1975</td></tr>
+        <tr><td class="place-name">מצרים</td><td>הרב-רב-סבא - יועץ פיננסי של המלך</td></tr>
+        <tr><td class="place-name">פריז</td><td>ילדות; רחוב רוזייה; המטרו; הרובע ה-17 של דולי</td></tr>
+        <tr><td class="place-name">ליון</td><td>המחסום ברכבת בבריחה דרומה</td></tr>
+        <tr><td class="place-name">מרסיי</td><td>בניית מיטות המעפילים</td></tr>
+        <tr><td class="place-name">חיפה</td><td>נמל העלייה של אלברט, 1948</td></tr>
+        <tr><td class="place-name">ירושלים</td><td>הולדת יוסי, 02/04/1951</td></tr>
+        <tr><td class="place-name">פונטו-קומבו (Pontault-Combault)</td><td>אזור בית האב; תחנת האוטובוס של המפגש עם תרז</td></tr>
+        <tr><td class="place-name">פוטו (Puteaux)</td><td>הדירה הקטנה 1960–68</td></tr>
+        <tr><td class="place-name">כפר גלעדי</td><td>תחנה ראשונה של דולי בארץ (?)</td></tr>
+        <tr><td class="place-name">מושב משמרת</td><td>לואיז וז&#x27;קי</td></tr>
+        <tr><td class="place-name">תל מונד</td><td>הרב והחתונה</td></tr>
+        <tr><td class="place-name">טולוז</td><td>עיר מותה של דולי</td></tr>
+      </tbody>
+    </table>
+  </article>
+
+  <article class="chapter appendix" id="appendix-timeline">
+    <span class="eyebrow">נספח ב</span>
+    <h2>ציר הזמן</h2>
+    <p class="appendix-intro">האירועים מסודרים כרונולוגית על הציר ומקובצים לתקופות. תאריכים המסומנים "טעון אימות" ממתינים לבירור בפגישות הבאות.</p>
+    <div class="timeline">
+      <div class="tl-era"><span class="tl-era-pill">שורשים <small>עד 1939</small></span></div>
+      <div class="tl-item tl-a tl-uncertain">
+        <div class="tl-head"><span class="tl-date">תחילת המאה ה-20</span><span class="tl-place">מצרים ← ביירות</span></div>
+        <div class="tl-event">אבי-סבה של דולי (רב-רב-סבא) משמש יועץ פיננסי של מלך מצרים; המלך מזהיר אותו מקנאת הסובבים - במיוחד בהיותו יהודי - ומורה לו לעזוב מיד; עובר ללבנון. הסיפור התגלה בביקור אצל דוד בבית אבות בקנדה</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">~1925</span><span class="tl-place">הונגריה ← צרפת</span></div>
+        <div class="tl-event">דזירה (דז&#x27;ה/Dezső) ואליזבת קליין, סבו וסבתו מצד האב, מהגרים מהונגריה לצרפת אחרי מלחמת העולם הראשונה</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">31/12/1922</span><span class="tl-place">בודפשט</span></div>
+        <div class="tl-event">אדלברט (אלברט) קליין, אביו של יוסי, נולד בבודפשט; גדל בצרפת. אחיו: לילי, אדל, פאולו, רוז&#x27;ה, וחצי-אח גסטון (מנישואים ראשונים של הסבתא)</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">1925–1940</span><span class="tl-place">צרפת</span></div>
+        <div class="tl-event">דזירה עובד במפעל רנו, עד שחוקי וישי נגד היהודים מדירים אותו ב-1940</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">1932</span><span class="tl-place">ביירות</span></div>
+        <div class="tl-event">דולי (בת-שבע) דישי נולדת בביירות - בת הזקונים; הוריה אסתר ויוסף דישי (יוסי נושא את שמו). יוסף היה תקופה מסוימת ראש הקהילה היהודית של לבנון. אחיה: בלה, אודט, לואיז, אווה ועוד (שבע אחיות), ואח - ויקטור. דוברת ערבית וצרפתית</div>
+      </div>
+      <div class="tl-era"><span class="tl-era-pill">מלחמת העולם <small>1940–1944</small></span></div>
+      <div class="tl-item tl-a tl-uncertain">
+        <div class="tl-head"><span class="tl-date">~1942</span><span class="tl-place">פריז ← דרום צרפת</span></div>
+        <div class="tl-event">אלברט מוזהר במטרו ע&quot;י בחורה: &quot;אל תגיע הביתה היום - הערב איסוף של יהודים&quot;. מבריח את אחיו דרומה</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">~1942</span><span class="tl-place">ליון, קו התיחום</span></div>
+        <div class="tl-event">במחסום גרמני ליד ליון: יורדים מהרכבת לא ברצף אלא לסירוגין - הגרמנים בודקים ניירות של כל שני, וכולם עוברים (בלונדינים, &quot;לא נראו יהודים&quot;). חוצים את הגבול לצרפת החופשית בלילה גשום; הכלבים לא מריחים אותם. המקור: הדודה לילי</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">~1942–44</span><span class="tl-place">פריז</span></div>
+        <div class="tl-event">דזירה ואליזבת ניצלים בזכות שומרת הבניין (קונסיירז&#x27;): שוטרים צרפתים משתפי פעולה שואלים על &quot;הזוג קליין&quot; בעודם יושבים בסלון שלה - &quot;עזבו מזמן&quot;</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">מלה&quot;ע השנייה</span><span class="tl-place">צרפת</span></div>
+        <div class="tl-event">הורי דזירה ואליזבת (דור רביעי) נתפסים - אין עקבות; נהרגו כנראה עוד בצרפת</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">אחרי המלחמה</span><span class="tl-place">צרפת</span></div>
+        <div class="tl-event">אהובה של אדל - איש מיליציית וישי שהציל אותה - מחוסל כמשתף פעולה; היא לא נישאה מעולם ולא דיברה על זה</div>
+      </div>
+      <div class="tl-era"><span class="tl-era-pill">עלייה, אהבה ולידה <small>1945–1952</small></span></div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">1945–48</span><span class="tl-place">מרסיי</span></div>
+        <div class="tl-event">אלברט, נגר, בונה מיטות (דרגשים) בספינות המעפילים במרסיי בשירות ההגנה - &quot;כמו אקסודוס&quot;</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">1948</span><span class="tl-place">חיפה</span></div>
+        <div class="tl-event">אלברט עולה: מגיע לנמל חיפה, מקבל רובה ומשובץ בצבא החדש בלי לדעת עברית (מח&quot;ל). &quot;איזה אושר שנתנו לי - נשק להגן על מדינת ישראל&quot;. שנים אחר-כך מקבל אות הוקרה מהשגריר הישראלי בצרפת</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">1949</span><span class="tl-place">לבנון ← ישראל</span></div>
+        <div class="tl-event">דולי עוזבת את לבנון לישראל - בת 17, צעד נדיר למשפחתה; דרך כפר גלעדי (?); מתנדבת לצה&quot;ל. מאבדת שלוש אצבעות ביד ימין במלחמת העצמאות (בתמלול: &quot;תאונה&quot;, סירבה לפיצויים)</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">מלחמת העצמאות</span><span class="tl-place">ישראל</span></div>
+        <div class="tl-event">אלברט ודולי נפגשים - כנראה על רקע הצרפתית המשותפת</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">ינואר 1950</span><span class="tl-place">ישראל</span></div>
+        <div class="tl-event">אלברט ודולי נישאים</div>
+      </div>
+      <div class="tl-item tl-b tl-key">
+        <div class="tl-head"><span class="tl-date">02/04/1951</span><span class="tl-place">ירושלים</span></div>
+        <div class="tl-event">יוסי נולד בירושלים. ההורים גרים בירושלים, כנראה ליד אודט (נשואה + בת קטנה, דינה)</div>
+      </div>
+      <div class="tl-era"><span class="tl-era-pill">ילדות בצרפת <small>1953–1959</small></span></div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">1953</span><span class="tl-place">צרפת</span></div>
+        <div class="tl-event">ההורים עוזבים את ישראל לצרפת - הסיבה לא ידועה. יוסי מושם מגיל צעיר מאוד במשפחות אומנה, לא זוכר את הוריו חיים יחד</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">ילדות עד גיל ~9</span><span class="tl-place">צרפת</span></div>
+        <div class="tl-event">משפחות אומנה, כמעט כל שנה משפחה אחרת, רובן נוצריות; נשלח לכנסייה בימי ראשון ונהנה משירת הכומר. לא ידע שהוא יהודי עד גיל 9. &quot;עד גיל 9 לא ידעתי מה זה תא משפחתי&quot;</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">~1955/56</span><span class="tl-place">צרפת</span></div>
+        <div class="tl-event">ז&#x27;קי נולד; יוסי פוגש אותו לראשונה בן חודש בערך, בביקור בית של יום ראשון. ז&#x27;קי אינו בנו של אלברט - דולי הודיעה זאת כדי לקבל את הגט; יוסי גילה את זהות האב האמיתי רק בגיל 39–40, במקרה</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">~1958 (גיל 7)</span><span class="tl-place">בית משפט, צרפת</span></div>
+        <div class="tl-event">גירושי ההורים. יוסי במסדרון בית המשפט, שומע אותם מתווכחים. אלברט מקבל משמורת על יוסי, דולי על ז&#x27;קי</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">גיל 7–8</span><span class="tl-place">בית ספר כפרי</span></div>
+        <div class="tl-event">הילד האפריקאי: ביום האחרון של הלימודים הבנים מרוקנים את ילקוטו; יוסי מרים דף, רואה ציורים מרהיבים, מתהפך בו-במקום, מבריח את התוקפים ועוזר לו לאסוף. &quot;החלטתי להביט באנשים לא על פי מראם אלא לשפוט אותם על פי מעשיהם&quot;</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">~1959–60 (גיל 8–9)</span><span class="tl-place">צרפת</span></div>
+        <div class="tl-event">שנה במעון ילדים יהודי של ארגן אוז&quot;ה (OSE) בארמון (&quot;ארמון של מלכה&quot;), 20–30 ילדים, חלקם יתומי שואה: מגלה שהוא יהודי, לומד עברית, תנ&quot;ך, שניצל בימי שישי, הווי &quot;ישראלי&quot;. &quot;עולם חדש לגמרי&quot;</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">~גיל 9</span><span class="tl-place">פונטו-קומבו (?)</span></div>
+        <div class="tl-event">אלברט אוסף אותו חזרה הביתה. ז&#x27;קי אצל שכנים בקרבת מקום (&quot;כמו רוטשילד אצלנו&quot;) - נפגשים די בקביעות; דולי באה לפעמים לבקר שם</div>
+      </div>
+      <div class="tl-era"><span class="tl-era-pill">פוטו והנעורים <small>1960–1967</small></span></div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">~1960–61</span><span class="tl-place">נמל התעופה פריז ← מושב משמרת</span></div>
+        <div class="tl-event">הפרידה מז&#x27;קי: אלברט לוקח את יוסי על האופנוע לנמל התעופה של פריז - שם רואה את ז&#x27;קי בפעם האחרונה. דולי שולחת אותו (בן ~5) לישראל, אל לואיז, לחווה שלה במושב משמרת</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">~גיל 10</span><span class="tl-place">פריז, הרובע ה-17</span></div>
+        <div class="tl-event">ביקורים אצל דולי פעם בחודש (לפי צו): אוטובוס לבדו כולל החלפת קווים לרובע ה-17 בפריז; דולי חיה עם ז&#x27;ילבר, מורה בי&quot;ס יסודי, בדירה זעירה; קולנוע וטיולים מול חלונות ראווה. מפתח יכולת &quot;לקרוא סרט&quot;</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">~1959–60</span><span class="tl-place">פונטו-קומבו</span></div>
+        <div class="tl-event">יוסי נשלח לאסוף את אדל מתחנת האוטובוס בפונטו-קומבו - שם פוגש לראשונה את תרז (&quot;תחושת בטן מוזרה - הבנתי שזה לא מקרה&quot;). אדל ותרז עבדו יחד כתופרות במפעל</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">1960</span><span class="tl-place">פוטו</span></div>
+        <div class="tl-event">אלברט ותרז נישאים; עוברים לפוטו (Puteaux): קומה רביעית בלי מעלית, שירותים במסדרון, בלי מקלחת; המבואה - חדרו של יוסי. גר שם עד 1968</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">1960–68</span><span class="tl-place">פוטו</span></div>
+        <div class="tl-event">שנים קשות: מריבות ותלונות; תרז מזכירה בקביעות שאינה אמו; לעיתים אלברט מכה אותה ואת יוסי (חגורה). תרז - ילידת מרוקו, לא למדה מעולם, אנאלפביתית; יוסי מנסה ללמד אותה, מאבד סבלנות; מורה זקן מלמד אותה לקרוא. היא עוזבת מדי פעם וחוזרת</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">בית ספר</span><span class="tl-place">צרפת</span></div>
+        <div class="tl-event">גרוע בכוונה (&quot;אחד לפני האחרון&quot;); הסבא דזירה מציע 100 פרנק אם יהיה ראשון - מגיע שני בכוונה. מורה לאלברט: &quot;הבן שלך יכול להיות סופר - אתם רק לא שמים לב&quot;; חיבור שלו הודפס בבית הספר</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">~3 שנים</span><span class="tl-place">צרפת</span></div>
+        <div class="tl-event">הצופים של צרפת (Scouts de France) - מפלט מהבית: סלילת דרכים ביער, אוהלים, מכנסיים קצרים גם במינוס 10. &quot;עד היום אני אוהב את הקור&quot;. שם למד לשחות</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">1963</span><span class="tl-place">פוטו</span></div>
+        <div class="tl-event">דזירה עובר לגור בחדרו של יוסי; יוסי ישן על מזרן על הרצפה. דזירה דובר בעיקר הונגרית - קשה לתקשר</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">~1966 (גיל 15)</span><span class="tl-place">פריז</span></div>
+        <div class="tl-event">מצטרף לשומר הצעיר בפריז (בן דוד של אביו - מדריך שם): &quot;התנועה חינכה אותי והעניקה לי את המטען החינוכי והאינטלקטואלי הראשון שלי&quot;. קשרים איתנים עם חברי התנועה עד היום. לפני כן - תקופה אלימה ותקופת &quot;שטויות&quot; עם חבורה שעצר בעצמו</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">נעורים</span><span class="tl-place">פריז</span></div>
+        <div class="tl-event">קורא בלי הפסקה (ויקטור הוגו, אמיל זולא - &quot;עלובי החיים&quot;); מזהה מוצרט ובטהובן בשמיעה בלי שאיש כיוון אותו. &quot;בניתי את עצמי לבד&quot;</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">~1966–68</span><span class="tl-place">פריז</span></div>
+        <div class="tl-event">אלברט, לא מרוצה מהלימודים, שולח אותו להתמחות אצל דודיו - עסק למעילים בפריז: גזירת בטנות, משמעת מעשית, ערך העבודה הידנית; מאפשר לו לפקוד את השומר הצעיר בקביעות</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">~גיל 40 של אלברט (~1962)</span><span class="tl-place">צרפת</span></div>
+        <div class="tl-event">אלברט מפסיק נגרות (כאבי גב), לומד הנדסה, טכנאי בכור אטומי בצרפת; עוזב בגלל אנטישמיות (החזיר מכות) ונעשה סוכן בגדים</div>
+      </div>
+      <div class="tl-era"><span class="tl-era-pill">חזרה לישראל <small>1968 ואילך</small></span></div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">1968/69</span><span class="tl-place">ישראל</span></div>
+        <div class="tl-event">יוסי עולה לישראל - אחת הסיבות: לראות את ז&#x27;קי. אצל לואיז ואודט רואה לראשונה &quot;משפחה&quot;: אנשים יושבים, אוכלים יחד, רבים, צוחקים - &quot;לאיזה כוכב הגעתי?&quot;</div>
+      </div>
+      <div class="tl-item tl-b">
+        <div class="tl-head"><span class="tl-date">לפני החתונה</span><span class="tl-place">תל מונד</span></div>
+        <div class="tl-event">אצל הרב בתל מונד עם עדים ועם דולי: &quot;אשכנזי או ספרדי?&quot; - יוסי לא מכיר את המושגים. דולי: &quot;קוראים לי זיגלמאיר - אתה רוצה הוכחה טובה מזה?&quot; (והשם דווקא של מורה גוי ממזרח צרפת שגר ברחוב היהודים רוזייה) (?)</div>
+      </div>
+      <div class="tl-item tl-a">
+        <div class="tl-head"><span class="tl-date">-</span><span class="tl-place">פריז, טולוז</span></div>
+        <div class="tl-event">דולי נשארה בפריז (חיה עם ז&#x27;ילבר; לפי התמלול נישאה למורה), עברה לטולוז ושם נפטרה</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="chapter appendix" id="appendix-characters">
+    <span class="eyebrow">נספח ג</span>
+    <h2>מי ומי - הדמויות</h2>
+    <p class="appendix-intro">שני ענפים שמתכנסים: קליין מהונגריה ודישי מביירות. העץ נותן את התמונה, הכרטיסים שמתחתיו את הסיפורים.</p>
+    <div class="family-tree"><svg viewBox="0 0 740 395" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="עץ משפחתי">
+  <line x1="568" y1="50" x2="568" y2="80"/>
+  <line x1="430" y1="80" x2="706" y2="80"/>
+  <line x1="430" y1="80" x2="430" y2="106"/>
+  <line x1="492" y1="80" x2="492" y2="106"/>
+  <line x1="545" y1="80" x2="545" y2="106"/>
+  <line x1="598" y1="80" x2="598" y2="106"/>
+  <line x1="651" y1="80" x2="651" y2="106"/>
+  <line class="dash" x1="706" y1="80" x2="706" y2="106"/>
+  <line x1="200" y1="50" x2="200" y2="80"/>
+  <line x1="40" y1="80" x2="360" y2="80"/>
+  <line x1="360" y1="80" x2="360" y2="106"/>
+  <line x1="310" y1="80" x2="310" y2="106"/>
+  <line x1="260" y1="80" x2="260" y2="106"/>
+  <line x1="208" y1="80" x2="208" y2="106"/>
+  <line x1="158" y1="80" x2="158" y2="106"/>
+  <line x1="100" y1="80" x2="100" y2="106"/>
+  <line x1="40" y1="80" x2="40" y2="106"/>
+  <line x1="430" y1="134" x2="430" y2="168"/>
+  <line x1="360" y1="134" x2="360" y2="168"/>
+  <line x1="360" y1="168" x2="430" y2="168"/>
+  <line x1="395" y1="168" x2="395" y2="192"/>
+  <line x1="340" y1="192" x2="430" y2="192"/>
+  <line x1="430" y1="192" x2="430" y2="206"/>
+  <line class="dash" x1="340" y1="192" x2="340" y2="206"/>
+  <line class="dash" x1="445" y1="134" x2="560" y2="206"/>
+  <line x1="430" y1="234" x2="430" y2="262"/>
+  <line x1="430" y1="262" x2="500" y2="262"/>
+  <line x1="500" y1="262" x2="500" y2="268"/>
+  <line x1="465" y1="262" x2="465" y2="300"/>
+  <line x1="370" y1="300" x2="560" y2="300"/>
+  <line x1="370" y1="300" x2="370" y2="304"/>
+  <line x1="465" y1="300" x2="465" y2="304"/>
+  <line x1="560" y1="300" x2="560" y2="304"/>
+  <line x1="370" y1="332" x2="370" y2="346"/>
+  <line x1="302" y1="346" x2="450" y2="346"/>
+  <line x1="302" y1="346" x2="302" y2="354"/>
+  <line x1="350" y1="346" x2="350" y2="354"/>
+  <line x1="398" y1="346" x2="398" y2="354"/>
+  <line x1="450" y1="346" x2="450" y2="354"/>
+  <line x1="560" y1="332" x2="560" y2="346"/>
+  <line x1="520" y1="346" x2="618" y2="346"/>
+  <line x1="520" y1="346" x2="520" y2="354"/>
+  <line x1="572" y1="346" x2="572" y2="354"/>
+  <line x1="618" y1="346" x2="618" y2="354"/>
+  <a class="tn" href="#char-3"><rect x="493" y="22" width="150" height="28" rx="9"/><text x="568" y="40" text-anchor="middle">דזירה ♦ אליזבת</text></a>
+  <a class="tn" href="#char-5"><rect x="130" y="22" width="140" height="28" rx="9"/><text x="200" y="40" text-anchor="middle">יוסף ♦ אסתר</text></a>
+  <a class="tn strong" href="#char-1"><rect x="401" y="106" width="58" height="28" rx="9"/><text x="430" y="124" text-anchor="middle">אלברט</text></a>
+  <a class="tn" href="#char-10"><rect x="468" y="106" width="48" height="28" rx="9"/><text x="492" y="124" text-anchor="middle">לילי</text></a>
+  <a class="tn" href="#char-9"><rect x="523" y="106" width="44" height="28" rx="9"/><text x="545" y="124" text-anchor="middle">אדל</text></a>
+  <a class="tn" href="#char-11"><rect x="574" y="106" width="48" height="28" rx="9"/><text x="598" y="124" text-anchor="middle">פאולו</text></a>
+  <a class="tn" href="#char-11"><rect x="628" y="106" width="46" height="28" rx="9"/><text x="651" y="124" text-anchor="middle">רוז&#x27;ה</text></a>
+  <a class="tn" href="#char-12"><rect x="680" y="106" width="52" height="28" rx="9"/><text x="706" y="124" text-anchor="middle">גסטון</text></a>
+  <a class="tn strong" href="#char-2"><rect x="335" y="106" width="50" height="28" rx="9"/><text x="360" y="124" text-anchor="middle">דולי</text></a>
+  <a class="tn" href="#char-15"><rect x="290" y="106" width="40" height="28" rx="9"/><text x="310" y="124" text-anchor="middle">בלה</text></a>
+  <a class="tn" href="#char-14"><rect x="238" y="106" width="44" height="28" rx="9"/><text x="260" y="124" text-anchor="middle">אודט</text></a>
+  <a class="tn" href="#char-13"><rect x="184" y="106" width="48" height="28" rx="9"/><text x="208" y="124" text-anchor="middle">לואיז</text></a>
+  <a class="tn" href="#char-15"><rect x="137" y="106" width="42" height="28" rx="9"/><text x="158" y="124" text-anchor="middle">אווה</text></a>
+  <g class="tn unk"><rect x="69" y="106" width="62" height="28" rx="9"/><text x="100" y="124" text-anchor="middle">3 אחיות ?</text></g>
+  <a class="tn" href="#char-16"><rect x="13" y="106" width="54" height="28" rx="9"/><text x="40" y="124" text-anchor="middle">ויקטור</text></a>
+  <a class="tn" href="#char-8"><rect x="536" y="206" width="48" height="28" rx="9"/><text x="560" y="224" text-anchor="middle">תרז</text></a>
+  <g class="tn key"><rect x="403" y="206" width="54" height="28" rx="9"/><text x="430" y="224" text-anchor="middle">יוסי</text></g>
+  <a class="tn" href="#char-7"><rect x="316" y="206" width="48" height="28" rx="9"/><text x="340" y="224" text-anchor="middle">ז&#x27;קי</text></a>
+  <a class="tn" href="#char-20"><rect x="470" y="268" width="60" height="28" rx="9"/><text x="500" y="286" text-anchor="middle">אהובה</text></a>
+  <a class="tn" href="#char-21"><rect x="346" y="304" width="48" height="28" rx="9"/><text x="370" y="322" text-anchor="middle">נטלי</text></a>
+  <a class="tn" href="#char-21"><rect x="440" y="304" width="50" height="28" rx="9"/><text x="465" y="322" text-anchor="middle">דניאל</text></a>
+  <a class="tn" href="#char-21"><rect x="533" y="304" width="54" height="28" rx="9"/><text x="560" y="322" text-anchor="middle">מיכאל</text></a>
+  <a class="tn" href="#char-22"><rect x="280" y="354" width="44" height="28" rx="9"/><text x="302" y="372" text-anchor="middle">יהלי</text></a>
+  <a class="tn" href="#char-22"><rect x="329" y="354" width="42" height="28" rx="9"/><text x="350" y="372" text-anchor="middle">אורי</text></a>
+  <a class="tn" href="#char-22"><rect x="377" y="354" width="42" height="28" rx="9"/><text x="398" y="372" text-anchor="middle">איתי</text></a>
+  <a class="tn" href="#char-22"><rect x="427" y="354" width="46" height="28" rx="9"/><text x="450" y="372" text-anchor="middle">אריאל</text></a>
+  <a class="tn" href="#char-23"><rect x="497" y="354" width="46" height="28" rx="9"/><text x="520" y="372" text-anchor="middle">יונתן</text></a>
+  <a class="tn" href="#char-23"><rect x="551" y="354" width="42" height="28" rx="9"/><text x="572" y="372" text-anchor="middle">עמית</text></a>
+  <g class="tn unk"><rect x="603" y="354" width="30" height="28" rx="9"/><text x="618" y="372" text-anchor="middle">?</text></g>
+  <text class="lbl" x="395" y="162" text-anchor="middle">נישאו 1950</text>
+  <text class="lbl" x="512" y="162" text-anchor="middle">נישואים שניים · 1960</text>
+  <text class="lbl" x="322" y="252" text-anchor="middle">אב אחר · נודע בגיל 40</text>
+</svg></div>
+    <p class="tree-caption">לחיצה על שם בעץ קופצת אל כרטיס הדמות · סימני "?" הם שאלות פתוחות לפגישות הבאות</p>
+    <h3 class="char-group-title">המשפחה הקרובה</h3>
+    <div class="char-grid">
+      <div class="char-card" id="char-1">
+        <div class="char-name">אדלברט (אלברט) קליין</div>
+        <span class="char-rel">אבא</span>
+        <p>האב. נ&#x27; בודפשט 31/12/1922; בלונדיני, &quot;לא נראה יהודי&quot;; נגר → טכנאי כור אטומי → סוכן בגדים; הציל את אחיו בשואה; מח&quot;ל 1948</p>
+      </div>
+      <div class="char-card" id="char-2">
+        <div class="char-name">דולי (בת-שבע) דישי</div>
+        <span class="char-rel">אמא</span>
+        <p>האם. נ&#x27; ביירות 1932, בת זקונים; ערבית וצרפתית; עלתה 1949, איבדה שלוש אצבעות ביד ימין במלחמת העצמאות; חיה בפריז, נפטרה בטולוז</p>
+      </div>
+      <div class="char-card" id="char-7">
+        <div class="char-name">ז&#x27;קי</div>
+        <span class="char-rel">אח</span>
+        <p>אח (~1955/56), בן לאב אחר (נודע ליוסי בגיל ~40); נשלח בגיל 5 ללואיז במושב משמרת</p>
+      </div>
+      <div class="char-card" id="char-8">
+        <div class="char-name">תרז</div>
+        <span class="char-rel">אם חורגת</span>
+        <p>אשת האב השנייה (נישאו 1960); ילידת מרוקו, אנאלפביתית עד שמורה זקן לימד אותה; תופרת</p>
+      </div>
+      <div class="char-card" id="char-20">
+        <div class="char-name">אהובה</div>
+        <span class="char-rel">אשתו (סבתא)</span>
+        <p>אשתו של יוסי - נישאו אצל הרב בתל מונד</p>
+      </div>
+      <div class="char-card" id="char-21">
+        <div class="char-name">מיכאל, דניאל ונטלי</div>
+        <span class="char-rel">ילדים</span>
+        <p>שלושת ילדיהם של יוסי ואהובה</p>
+      </div>
+      <div class="char-card" id="char-22">
+        <div class="char-name">יהלי, אורי, איתי ואריאל</div>
+        <span class="char-rel">נכדים</span>
+        <p>ילדיה של נטלי; יהלי - &quot;יש לה את אותן עיניים&quot; של אלברט</p>
+      </div>
+      <div class="char-card" id="char-23">
+        <div class="char-name">יונתן, עמית ועוד אחד</div>
+        <span class="char-rel">נכדים</span>
+        <p>ילדיו של מיכאל - שם הילד השלישי טעון בירור (?)</p>
+      </div>
+    </div>
+    <h3 class="char-group-title">ענף קליין - הונגריה וצרפת</h3>
+    <div class="char-grid">
+      <div class="char-card" id="char-3">
+        <div class="char-name">דזירה (Dezső) קליין</div>
+        <span class="char-rel">סבא</span>
+        <p>סבא מצד האב, הונגרי; פועל רנו 1925–40; גר בחדרו של יוסי מ-1963; נתן 100 פרנק על הצטיינות</p>
+      </div>
+      <div class="char-card" id="char-4">
+        <div class="char-name">אליזבת קליין</div>
+        <span class="char-rel">סבתא</span>
+        <p>סבתא מצד האב; יוסי לא זוכר אותה</p>
+      </div>
+      <div class="char-card" id="char-9">
+        <div class="char-name">אדל</div>
+        <span class="char-rel">דודה</span>
+        <p>אחות האב; תופרת; אהובה (איש מיליציה) חוסל אחרי המלחמה - לא נישאה; הכירה את תרז לאלברט</p>
+      </div>
+      <div class="char-card" id="char-10">
+        <div class="char-name">לילי (ליליאן)</div>
+        <span class="char-rel">דודה</span>
+        <p>אחות האב; מקור סיפורי ההצלה</p>
+      </div>
+      <div class="char-card" id="char-11">
+        <div class="char-name">פאולו, רוז&#x27;ה</div>
+        <span class="char-rel">דודים</span>
+        <p>אחי האב</p>
+      </div>
+      <div class="char-card" id="char-12">
+        <div class="char-name">גסטון</div>
+        <span class="char-rel">דוד</span>
+        <p>חצי-אח של האב (מנישואיה הראשונים של אליזבת)</p>
+      </div>
+    </div>
+    <h3 class="char-group-title">ענף דישי - ביירות</h3>
+    <div class="char-grid">
+      <div class="char-card" id="char-5">
+        <div class="char-name">יוסף דישי</div>
+        <span class="char-rel">סבא</span>
+        <p>סבא מצד האם; ראש הקהילה היהודית של לבנון לתקופה; יוסי נושא את שמו (וכן שלושה בני דודים)</p>
+      </div>
+      <div class="char-card" id="char-6">
+        <div class="char-name">אסתר דישי</div>
+        <span class="char-rel">סבתא</span>
+        <p>סבתא מצד האם</p>
+      </div>
+      <div class="char-card" id="char-13">
+        <div class="char-name">לואיז</div>
+        <span class="char-rel">דודה</span>
+        <p>אחות דולי; חווה במושב משמרת; גידלה את ז&#x27;קי</p>
+      </div>
+      <div class="char-card" id="char-14">
+        <div class="char-name">אודט</div>
+        <span class="char-rel">דודה</span>
+        <p>אחות דולי; גרה בירושלים ב-1951 (נשואה + בת, דינה); אצלה ראה &quot;משפחה&quot;</p>
+      </div>
+      <div class="char-card" id="char-15">
+        <div class="char-name">בלה, אווה</div>
+        <span class="char-rel">דודות</span>
+        <p>אחיות נוספות של דולי (סה&quot;כ שבע אחיות + אח)</p>
+      </div>
+      <div class="char-card" id="char-16">
+        <div class="char-name">ויקטור</div>
+        <span class="char-rel">דוד</span>
+        <p>אחיה של דולי</p>
+      </div>
+      <div class="char-card" id="char-17">
+        <div class="char-name">דינה</div>
+        <span class="char-rel">בת דודה</span>
+        <p>בת אודט, ילדה קטנה בירושלים 1951</p>
+      </div>
+      <div class="char-card" id="char-18">
+        <div class="char-name">ז&#x27;ילבר</div>
+        
+        <p>בן זוגה של דולי בפריז, מורה בבי&quot;ס יסודי</p>
+      </div>
+      <div class="char-card" id="char-19">
+        <div class="char-name">הדוד מקנדה</div>
+        <span class="char-rel">דוד</span>
+        <p>סיפר בבית אבות את סיפורי לבנון ומצרים</p>
+      </div>
+    </div>
+  </article>
+
+</main>
+
+<footer>
+  מבוסס על שיחות עם סבא יוסי ועל זיכרונות שכתב · פגישה ראשונה: 9 ביולי 2026 · מתעדכן
+</footer>
+
+<script>
+(function () {
+  var links = document.querySelectorAll('nav.toc a');
+  var map = {};
+  links.forEach(function (a) {
+    var id = a.getAttribute('href').slice(1);
+    map[id] = a;
+  });
+  var current = null;
+  function setActive(id) {
+    if (current === id) return;
+    current = id;
+    links.forEach(function (a) { a.classList.remove('active'); });
+    var link = map[id];
+    if (link) {
+      link.classList.add('active');
+      var nav = link.closest('nav');
+      var lt = link.offsetTop, nh = nav.clientHeight;
+      if (lt < nav.scrollTop + 20 || lt > nav.scrollTop + nh - 40) {
+        nav.scrollTo({ top: lt - nh / 2, behavior: 'smooth' });
+      }
+    }
+  }
+  var articles = Array.prototype.slice.call(document.querySelectorAll('article.chapter'));
+  function onScroll() {
+    var probe = window.scrollY + window.innerHeight * 0.3;
+    var active = articles[0] && articles[0].id;
+    for (var i = 0; i < articles.length; i++) {
+      if (articles[i].offsetTop <= probe) active = articles[i].id;
+    }
+    if (active) setActive(active);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // הערות השוליים "רוחפות" לאורך הפרק בזמן גלילה, ונעצרות בתחילתו/בסופו
+  var noteGroups = Array.prototype.slice.call(document.querySelectorAll('.margin-notes'));
+  var BASE_OFFSET = 51; // 3.2rem
+  var BOTTOM_GAP = 40;
+  function updateNotes() {
+    if (window.innerWidth < 1361) return;
+    noteGroups.forEach(function (aside) {
+      var article = aside.closest('article.chapter');
+      if (!article) return;
+      var artRect = article.getBoundingClientRect();
+      var asideH = aside.offsetHeight;
+      var maxTranslate = Math.max(BASE_OFFSET, artRect.height - asideH - BOTTOM_GAP);
+      var wanted = BASE_OFFSET - artRect.top;
+      var translate = Math.min(Math.max(wanted, BASE_OFFSET), maxTranslate);
+      aside.style.transform = 'translateY(' + Math.round(translate) + 'px)';
+    });
+  }
+  window.addEventListener('scroll', updateNotes, { passive: true });
+  window.addEventListener('resize', updateNotes);
+  updateNotes();
+
+  // "המקום שלך, סבא" - שמירה אוטומטית ל-localStorage של המחשב הזה
+  var STORAGE_KEY = 'saba-yossi-notes';
+  var savedNotes = {};
+  try { savedNotes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) {}
+  document.querySelectorAll('.grandpa-note-box').forEach(function (box) {
+    var id = box.getAttribute('data-note-id');
+    if (savedNotes[id]) box.textContent = savedNotes[id];
+    var saveIndicator = box.parentElement.querySelector('.grandpa-note-saved');
+    var timer = null;
+    box.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        savedNotes[id] = box.textContent;
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(savedNotes)); } catch (e) {}
+        if (saveIndicator) {
+          saveIndicator.classList.add('show');
+          clearTimeout(saveIndicator._hideTimer);
+          saveIndicator._hideTimer = setTimeout(function () {
+            saveIndicator.classList.remove('show');
+          }, 1800);
+        }
+      }, 500);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
