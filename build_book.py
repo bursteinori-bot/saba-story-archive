@@ -122,7 +122,7 @@ articles.append(f"""  <article class="chapter prologue" id="prologue">
     <span class="eyebrow">פתח דבר</span>
     <h2>לילדיי ולנכדיי</h2>
 {letter_paras}
-    <p class="signature">— יוסי קליין (במקור בצרפתית)</p>
+    <p class="signature">- יוסי קליין</p>
   </article>""")
 
 for i, (title, period, blocks) in enumerate(chapters, 1):
