@@ -138,10 +138,10 @@ for i, (title, period, blocks) in enumerate(chapters, 1):
     grandpa_note = f"""
     <div class="grandpa-note">
       <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
-      <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר במחשב הזה אוטומטית.</div>
+      <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר ישירות באתר (בפעם הראשונה תתבקשו להגדיר גישה - לחצו על ⚙️ למטה).</div>
       <div class="grandpa-note-box" contenteditable="true" data-note-id="{cid}"
            data-placeholder="כתוב כאן..."></div>
-      <span class="grandpa-note-saved">✓ נשמר</span>
+      <div class="grandpa-note-status" data-status-for="{cid}"></div>
     </div>"""
     articles.append(f"""  <article class="chapter" id="{cid}">
     <span class="eyebrow">{eyebrow}</span>
@@ -565,11 +565,57 @@ page = """<!DOCTYPE html>
   .grandpa-note-box:empty::before {
     content: attr(data-placeholder); color: var(--ink-3);
   }
-  .grandpa-note-saved {
-    display: inline-block; margin-top: .5rem; font-size: .74rem; color: var(--ink-3);
-    opacity: 0; transition: opacity .3s ease;
+  .grandpa-note-status {
+    min-height: 1.2em; margin-top: .5rem; font-size: .74rem; color: var(--ink-3);
   }
-  .grandpa-note-saved.show { opacity: 1; }
+  .grandpa-note-status.saving { color: var(--ink-3); }
+  .grandpa-note-status.saved { color: #2f7a4d; }
+  .grandpa-note-status.error { color: #b3432b; cursor: pointer; text-decoration: underline; }
+  /* כפתור ומודל הגדרות שמירה */
+  .gh-settings-btn {
+    position: fixed; bottom: 22px; inset-inline-end: 22px; z-index: 200;
+    width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--glass-border);
+    background: var(--glass-strong); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-card); font-size: 1.3rem; cursor: pointer;
+  }
+  .gh-settings-modal {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(27,42,65,.45); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+  }
+  .gh-settings-modal[hidden] { display: none; }
+  .gh-settings-card {
+    position: relative; max-width: 480px; width: 100%; max-height: 85vh; overflow-y: auto;
+    background: #fff; border-radius: 20px; padding: 2rem;
+    box-shadow: var(--shadow-card);
+    font-family: "Heebo", sans-serif; text-align: start;
+  }
+  .gh-settings-card h3 { margin: 0 0 .8rem; color: var(--ink); font-size: 1.15rem; }
+  .gh-settings-card p { font-size: .88rem; line-height: 1.7; color: var(--ink-2); margin: 0 0 .8rem; }
+  .gh-settings-card ol { margin: 0 0 1rem; padding-inline-start: 1.3rem; }
+  .gh-settings-card ol li { font-size: .86rem; line-height: 1.8; color: var(--ink-2); margin-bottom: .3rem; }
+  .gh-settings-card code {
+    background: rgba(27,42,65,.07); padding: 1px 6px; border-radius: 5px; font-size: .82em;
+  }
+  .gh-settings-card a { color: var(--ink); }
+  .gh-settings-close {
+    position: absolute; top: 1rem; inset-inline-end: 1rem;
+    width: 30px; height: 30px; border-radius: 50%; border: none;
+    background: rgba(27,42,65,.06); cursor: pointer; font-size: .9rem; color: var(--ink-2);
+  }
+  #ghTokenInput {
+    width: 100%; padding: .7rem .9rem; border: 1px solid var(--glass-border);
+    border-radius: 10px; font-family: monospace; font-size: .82rem;
+    margin-bottom: .8rem; box-sizing: border-box;
+  }
+  .gh-settings-actions { display: flex; gap: .6rem; margin-bottom: .8rem; }
+  .gh-settings-actions button {
+    font-family: "Heebo", sans-serif; font-size: .85rem; font-weight: 600;
+    padding: 8px 18px; border-radius: 999px; cursor: pointer; border: none;
+  }
+  #ghTokenSave { background: var(--ink); color: #fff; }
+  #ghTokenClear { background: rgba(27,42,65,.07); color: var(--ink-2); }
+  .gh-settings-note { font-size: .76rem !important; color: var(--ink-3) !important; }
   /* במסך רחב — התוכן ממורכז בשטח שבין התפריט (ימין) להערות השוליים (שמאל) */
   @media (min-width: 1361px) {
     main {
@@ -828,6 +874,29 @@ __ARTICLES__
   מבוסס על שיחות עם סבא יוסי ועל זיכרונות שכתב · פגישה ראשונה: 9 ביולי 2026 · מתעדכן
 </footer>
 
+<button type="button" class="gh-settings-btn" id="ghSettingsBtn" title="הגדרות שמירת הערות">⚙️</button>
+
+<div class="gh-settings-modal" id="ghSettingsModal" hidden>
+  <div class="gh-settings-card">
+    <button type="button" class="gh-settings-close" id="ghSettingsClose">✕</button>
+    <h3>הגדרת שמירת הערות</h3>
+    <p>כדי שההערות שכותבים בתחתית כל פרק יישמרו ישירות באתר, צריך "מפתח גישה" חד-פעמי. כך משיגים אחד:</p>
+    <ol>
+      <li>לוחצים על <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">הקישור הזה</a> (יבקש התחברות לחשבון GitHub).</li>
+      <li>תחת "Repository access" בוחרים "Only select repositories" ובוחרים את <code>saba-story-archive</code>.</li>
+      <li>תחת "Permissions" → "Repository permissions" מוצאים "Contents" ומשנים ל-"Read and write".</li>
+      <li>גוללים למטה ולוחצים "Generate token".</li>
+      <li>מעתיקים את המחרוזת שמתחילה ב-<code>github_pat_</code> ומדביקים כאן:</li>
+    </ol>
+    <input type="password" id="ghTokenInput" placeholder="github_pat_..." autocomplete="off" />
+    <div class="gh-settings-actions">
+      <button type="button" id="ghTokenSave">שמור</button>
+      <button type="button" id="ghTokenClear">נקה גישה מהמכשיר הזה</button>
+    </div>
+    <p class="gh-settings-note">המפתח נשמר רק בדפדפן הזה, ומאפשר כתיבה לקובץ ההערות בלבד באתר הזה - שום דבר אחר.</p>
+  </div>
+</div>
+
 <script>
 (function () {
   var links = document.querySelectorAll('nav.toc a');
@@ -884,29 +953,139 @@ __ARTICLES__
   window.addEventListener('resize', updateNotes);
   updateNotes();
 
-  // "המקום שלך, סבא" - שמירה אוטומטית ל-localStorage של המחשב הזה
-  var STORAGE_KEY = 'saba-yossi-notes';
-  var savedNotes = {};
-  try { savedNotes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) {}
+  // "המקום שלך, סבא" - שמירה ישירה לקובץ ההערות ב-GitHub דרך ה-API
+  var GH_OWNER = 'bursteinori-bot';
+  var GH_REPO = 'saba-story-archive';
+  var GH_NOTES_PATH = '06-הערות-קוראים.md';
+  var GH_BRANCH = 'main';
+  var GH_TOKEN_KEY = 'saba-notes-gh-token';
+
+  function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ''; }
+  function ghApiUrl() {
+    return 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + encodeURIComponent(GH_NOTES_PATH);
+  }
+  function b64EncodeUnicode(str) { return btoa(unescape(encodeURIComponent(str))); }
+  function b64DecodeUnicode(str) { return decodeURIComponent(escape(atob(str))); }
+
+  function ghFetchNotesFile() {
+    return fetch(ghApiUrl() + '?ref=' + GH_BRANCH, {
+      headers: { 'Authorization': 'token ' + ghToken(), 'Accept': 'application/vnd.github+json' }
+    }).then(function (res) {
+      if (!res.ok) throw new Error('http-' + res.status);
+      return res.json();
+    }).then(function (data) {
+      return { sha: data.sha, content: b64DecodeUnicode(data.content.replace(/\\n/g, '')) };
+    });
+  }
+
+  function replaceNoteSection(fullText, chapterId, newBody) {
+    var marker = '<!-- note:' + chapterId + ' -->';
+    var idx = fullText.indexOf(marker);
+    if (idx === -1) {
+      return fullText.replace(/\s*$/, '') + '\\n\\n' + marker + '\\n## ' + chapterId + '\\n' + newBody.trim() + '\\n';
+    }
+    var afterMarker = idx + marker.length;
+    var nextIdx = fullText.indexOf('<!-- note:', afterMarker);
+    if (nextIdx === -1) nextIdx = fullText.length;
+    var section = fullText.slice(afterMarker, nextIdx);
+    var headingMatch = section.match(/^\s*\\n##[^\\n]*\\n/);
+    var headingPart = headingMatch ? headingMatch[0] : '\\n## \\n';
+    var newSection = headingPart + newBody.trim() + '\\n\\n';
+    return fullText.slice(0, afterMarker) + newSection + fullText.slice(nextIdx);
+  }
+
+  function setStatus(el, kind, text) {
+    if (!el) return;
+    el.textContent = text;
+    el.className = 'grandpa-note-status' + (kind ? ' ' + kind : '');
+  }
+
+  function ghSaveNote(chapterId, text, statusEl) {
+    if (!ghToken()) {
+      setStatus(statusEl, 'error', '⚠ צריך להגדיר גישה קודם (לחצו כאן)');
+      return;
+    }
+    setStatus(statusEl, 'saving', 'שומר...');
+    ghFetchNotesFile().then(function (file) {
+      var updated = replaceNoteSection(file.content, chapterId, text);
+      return fetch(ghApiUrl(), {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'token ' + ghToken(),
+          'Accept': 'application/vnd.github+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'הערת קורא: ' + chapterId,
+          content: b64EncodeUnicode(updated),
+          sha: file.sha,
+          branch: GH_BRANCH
+        })
+      });
+    }).then(function (res) {
+      if (!res.ok) throw new Error('http-' + res.status);
+      setStatus(statusEl, 'saved', '✓ נשמר באתר');
+    }).catch(function (err) {
+      var msg = 'השמירה נכשלה - לחצו כאן לנסות שוב';
+      if (/40[13]/.test(String(err.message))) msg = '⚠ הגישה לא תקפה - לחצו כאן להגדיר מחדש';
+      setStatus(statusEl, 'error', msg);
+    });
+  }
+
+  function ghLoadAllNotes() {
+    if (!ghToken()) return;
+    ghFetchNotesFile().then(function (file) {
+      document.querySelectorAll('.grandpa-note-box').forEach(function (box) {
+        var id = box.getAttribute('data-note-id');
+        var marker = '<!-- note:' + id + ' -->';
+        var idx = file.content.indexOf(marker);
+        if (idx === -1) return;
+        var after = idx + marker.length;
+        var nextIdx = file.content.indexOf('<!-- note:', after);
+        if (nextIdx === -1) nextIdx = file.content.length;
+        var section = file.content.slice(after, nextIdx);
+        var body = section.replace(/^\s*\\n##[^\\n]*\\n/, '').trim();
+        if (body && !box.textContent.trim()) box.textContent = body;
+      });
+    }).catch(function () { /* טעינה שקטה - לא קריטי אם נכשלת */ });
+  }
+
   document.querySelectorAll('.grandpa-note-box').forEach(function (box) {
     var id = box.getAttribute('data-note-id');
-    if (savedNotes[id]) box.textContent = savedNotes[id];
-    var saveIndicator = box.parentElement.querySelector('.grandpa-note-saved');
+    var statusEl = box.closest('.grandpa-note').querySelector('.grandpa-note-status');
     var timer = null;
     box.addEventListener('input', function () {
       clearTimeout(timer);
-      timer = setTimeout(function () {
-        savedNotes[id] = box.textContent;
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(savedNotes)); } catch (e) {}
-        if (saveIndicator) {
-          saveIndicator.classList.add('show');
-          clearTimeout(saveIndicator._hideTimer);
-          saveIndicator._hideTimer = setTimeout(function () {
-            saveIndicator.classList.remove('show');
-          }, 1800);
-        }
-      }, 500);
+      setStatus(statusEl, '', '');
+      timer = setTimeout(function () { ghSaveNote(id, box.textContent, statusEl); }, 1500);
     });
+  });
+  ghLoadAllNotes();
+
+  // מודל ההגדרות (מפתח הגישה)
+  var settingsBtn = document.getElementById('ghSettingsBtn');
+  var settingsModal = document.getElementById('ghSettingsModal');
+  var settingsClose = document.getElementById('ghSettingsClose');
+  var tokenInput = document.getElementById('ghTokenInput');
+  var tokenSave = document.getElementById('ghTokenSave');
+  var tokenClear = document.getElementById('ghTokenClear');
+  function openSettings() { if (tokenInput) tokenInput.value = ghToken(); if (settingsModal) settingsModal.hidden = false; }
+  function closeSettings() { if (settingsModal) settingsModal.hidden = true; }
+  if (settingsBtn) settingsBtn.addEventListener('click', openSettings);
+  if (settingsClose) settingsClose.addEventListener('click', closeSettings);
+  if (settingsModal) settingsModal.addEventListener('click', function (e) { if (e.target === settingsModal) closeSettings(); });
+  if (tokenSave) tokenSave.addEventListener('click', function () {
+    var v = tokenInput.value.trim();
+    if (v) localStorage.setItem(GH_TOKEN_KEY, v);
+    closeSettings();
+    ghLoadAllNotes();
+  });
+  if (tokenClear) tokenClear.addEventListener('click', function () {
+    localStorage.removeItem(GH_TOKEN_KEY);
+    tokenInput.value = '';
+  });
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('.grandpa-note-status.error')) openSettings();
   });
 })();
 </script>
