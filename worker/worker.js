@@ -12,7 +12,7 @@ const MAX_TEXT_LENGTH = 4000;
 function corsHeaders() {
   return {
     "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
 }
@@ -60,10 +60,31 @@ async function ghFetch(path, token, init) {
   return res;
 }
 
+async function handleGet(env) {
+  const getRes = await ghFetch("/contents/" + encodeURIComponent(NOTES_PATH) + "?ref=" + BRANCH, env.GH_TOKEN);
+  if (!getRes.ok) {
+    return json({ error: "could not read notes file (" + getRes.status + ")" }, 502);
+  }
+  const fileData = await getRes.json();
+  const content = b64DecodeUnicode(fileData.content.replace(/\n/g, ""));
+  // מטמון קצר בקצה הרשת של Cloudflare - מספיק כדי לא להכביד על ה-API
+  // של GitHub בזמן שכמה בני משפחה גולשים בו-זמנית, בלי לגרום לעיכוב מורגש.
+  return new Response(JSON.stringify({ content }), {
+    headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=15", ...corsHeaders() },
+  });
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: corsHeaders() });
+    }
+    if (request.method === "GET") {
+      try {
+        return await handleGet(env);
+      } catch (e) {
+        return json({ error: "unexpected error: " + e.message }, 500);
+      }
     }
     if (request.method !== "POST") {
       return json({ error: "method not allowed" }, 405);

@@ -1207,11 +1207,13 @@
   window.addEventListener('resize', updateNotes);
   updateNotes();
 
-  // "המקום שלך, סבא" - שמירה בלי שום התחברות: כתיבה עוברת דרך פונקציה
-  // עננית קטנה שמחזיקה את מפתח הגישה בעצמה (ראו worker/ בתיקיית הפרויקט);
-  // קריאה נעשית ישירות מהריפו הציבורי בלי צורך באימות בכלל.
+  // "המקום שלך, סבא" - שמירה בלי שום התחברות: גם קריאה וגם כתיבה עוברות
+  // דרך אותה פונקציה עננית קטנה (worker/ בתיקיית הפרויקט) שמחזיקה את מפתח
+  // הגישה בעצמה (GET לקריאה, POST לכתיבה) -
+  // כך שלעולם לא פוגעים במגבלת הבקשות הציבורית של GitHub (60 לשעה לכל כתובת IP,
+  // שכל בני המשפחה שגולשים מאותה רשת ביתית חולקים ביניהם) ולא בעיכוב המטמון
+  // של raw.githubusercontent.com אחרי שמירה טרייה.
   var WORKER_URL = 'https://saba-notes-proxy.bursteinori.workers.dev';
-  var RAW_NOTES_URL = 'https://raw.githubusercontent.com/bursteinori-bot/saba-story-archive/main/06-%D7%94%D7%A2%D7%A8%D7%95%D7%AA-%D7%A7%D7%95%D7%A8%D7%90%D7%99%D7%9D.md';
 
   function setStatus(el, kind, text) {
     if (!el) return;
@@ -1234,10 +1236,11 @@
   }
 
   function loadAllNotes() {
-    fetch(RAW_NOTES_URL, { cache: 'no-store' }).then(function (res) {
+    fetch(WORKER_URL).then(function (res) {
       if (!res.ok) throw new Error('http-' + res.status);
-      return res.text();
-    }).then(function (fullText) {
+      return res.json();
+    }).then(function (data) {
+      var fullText = data.content;
       document.querySelectorAll('.grandpa-note-box').forEach(function (box) {
         var id = box.getAttribute('data-note-id');
         var marker = '<!-- note:' + id + ' -->';
