@@ -888,7 +888,7 @@ __ARTICLES__
   // "המקום שלך, סבא" - שמירה בלי שום התחברות: כתיבה עוברת דרך פונקציה
   // עננית קטנה שמחזיקה את מפתח הגישה בעצמה (ראו worker/ בתיקיית הפרויקט);
   // קריאה נעשית ישירות מהריפו הציבורי בלי צורך באימות בכלל.
-  var WORKER_URL = 'https://saba-notes-proxy.YOUR-SUBDOMAIN.workers.dev';
+  var WORKER_URL = 'https://saba-notes-proxy.bursteinori.workers.dev';
   var RAW_NOTES_URL = 'https://raw.githubusercontent.com/bursteinori-bot/saba-story-archive/main/06-%D7%94%D7%A2%D7%A8%D7%95%D7%AA-%D7%A7%D7%95%D7%A8%D7%90%D7%99%D7%9D.md';
 
   function setStatus(el, kind, text) {
