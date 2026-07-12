@@ -127,6 +127,7 @@ articles.append(f"""  <article class="chapter prologue" id="prologue">
 
 for i, (title, period, blocks) in enumerate(chapters, 1):
     cid = f"chapter-{i}"
+    source_file = "03-פרקים/" + os.path.basename(chapter_files[i - 1])
     toc_items.append(f'      <li class="toc-chapter"><a href="#{cid}">{html.escape(title)}</a></li>')
     rendered = [render_block(b) for b in blocks]
     body_html = "\n".join(h for kind, h in rendered if kind == "body")
@@ -145,8 +146,20 @@ for i, (title, period, blocks) in enumerate(chapters, 1):
     </div>"""
     articles.append(f"""  <article class="chapter" id="{cid}">
     <span class="eyebrow">{eyebrow}</span>
-    <h2>{html.escape(title)}</h2>
-{body_html}{notes_html}{grandpa_note}
+    <button type="button" class="chapter-edit-toggle" data-edit-for="{cid}" title="לערוך את הפרק הזה">✎ עריכה</button>
+    <div class="chapter-rendered" data-rendered-for="{cid}">
+      <h2>{html.escape(title)}</h2>
+{body_html}{notes_html}
+    </div>
+    <div class="chapter-edit-panel" data-edit-panel="{cid}" hidden>
+      <p class="chapter-edit-hint">עריכה ישירה של טקסט הפרק (בפורמט Markdown הפשוט שלנו - שורות ריקות מפרידות בין פסקאות). השינוי יופיע באתר תוך כדקה מהשמירה.</p>
+      <textarea class="chapter-edit-textarea" data-edit-textarea="{cid}" data-source-file="{source_file}">טוען...</textarea>
+      <div class="chapter-edit-actions">
+        <button type="button" class="chapter-edit-save" data-edit-save="{cid}">שמור</button>
+        <button type="button" class="chapter-edit-cancel" data-edit-cancel="{cid}">ביטול</button>
+      </div>
+      <div class="chapter-edit-status" data-edit-status="{cid}"></div>
+    </div>{grandpa_note}
   </article>""")
 
 # ---------- נספחים: הנתונים נמשכים מציר-זמן.md ----------
@@ -503,6 +516,38 @@ page = """<!DOCTYPE html>
     box-shadow: var(--shadow-soft); color: var(--ink-2);
     font-size: .8rem; font-weight: 600; letter-spacing: .05em; margin-bottom: 1rem;
   }
+  /* עריכה ישירה של טקסט הפרק - בלי שום התחברות */
+  .chapter-edit-toggle {
+    position: absolute; top: 1.6rem; inset-inline-end: 1.8rem;
+    font-family: "Heebo", sans-serif; font-size: .78rem; font-weight: 600;
+    color: var(--ink-2); background: var(--glass-strong);
+    border: 1px solid var(--glass-border); border-radius: 999px;
+    padding: 5px 14px; cursor: pointer; box-shadow: var(--shadow-soft);
+  }
+  .chapter-edit-toggle:hover { color: var(--ink); }
+  .chapter-edit-panel[hidden] { display: none; }
+  .chapter-edit-hint {
+    font-family: "Heebo", sans-serif; font-size: .82rem; color: var(--ink-3);
+    line-height: 1.7; margin: 0 0 .8rem;
+  }
+  .chapter-edit-textarea {
+    width: 100%; min-height: 360px; padding: 1.1rem 1.3rem;
+    background: rgba(255,255,255,.7); border: 1px solid var(--glass-border);
+    border-radius: 14px; font-family: "Frank Ruhl Libre", serif; font-size: 1.05rem;
+    line-height: 1.8; color: var(--ink); resize: vertical; box-sizing: border-box;
+  }
+  .chapter-edit-textarea:focus { border-color: rgba(27,42,65,.35); background: #fff; outline: none; }
+  .chapter-edit-actions { display: flex; gap: .6rem; margin-top: .9rem; }
+  .chapter-edit-actions button {
+    font-family: "Heebo", sans-serif; font-size: .85rem; font-weight: 600;
+    padding: 8px 20px; border-radius: 999px; cursor: pointer; border: none;
+  }
+  .chapter-edit-save { background: var(--ink); color: #fff; }
+  .chapter-edit-cancel { background: rgba(27,42,65,.07); color: var(--ink-2); }
+  .chapter-edit-status { min-height: 1.2em; margin-top: .6rem; font-size: .8rem; color: var(--ink-3); }
+  .chapter-edit-status.saving { color: var(--ink-3); }
+  .chapter-edit-status.saved { color: #2f7a4d; }
+  .chapter-edit-status.error { color: #b3432b; }
   article.chapter h2 { font-weight: 800; font-size: 1.9rem; color: var(--ink); margin: 0 0 1.8rem; }
   article.chapter p {
     font-family: "Frank Ruhl Libre", serif; font-size: 1.2rem;
@@ -945,6 +990,90 @@ __ARTICLES__
     });
   });
   loadAllNotes();
+
+  // עריכה ישירה של טקסט הפרק (Markdown גולמי), דרך אותה פונקציה עננית
+  function escapeHtml(s) {
+    var div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  // תצוגה מקדימה מיידית בצד הלקוח - לא זהה ב-100% לעיצוב הסופי (למשל
+  // בלוקים של הערת רקע היסטורי/שאלות פתוחות לא מוצגים כאן), אבל נותנת
+  // משוב מיידי לפני שהאתר נבנה מחדש בפועל תוך כדקה.
+  function quickRenderChapter(rawMd) {
+    var lines = rawMd.replace(/^\s+/, '').split('\\n');
+    var title = (lines[0] || '').replace(/^#\s*/, '');
+    var bodyStart = 1;
+    if (lines[1] && /^_.*_$/.test(lines[1].trim())) bodyStart = 2;
+    var body = lines.slice(bodyStart).join('\\n');
+    var blocks = body.split(/\\n\s*\\n/).filter(function (b) { return b.trim(); });
+    var out = '<h2>' + escapeHtml(title) + '</h2>';
+    blocks.forEach(function (b) {
+      b = b.trim();
+      if (b.charAt(0) === '>') {
+        out += '<blockquote>' + escapeHtml(b.replace(/^>\s?/gm, '').replace(/\\n/g, ' ')) + '</blockquote>';
+      } else if (/^\*\*(הערת רקע היסטורי|שאלות פתוחות)/.test(b)) {
+        // מוצג כרגיל אחרי הבנייה המחדש הבאה
+      } else {
+        out += '<p>' + escapeHtml(b.replace(/\\n/g, ' ')) + '</p>';
+      }
+    });
+    return out;
+  }
+
+  document.querySelectorAll('.chapter-edit-toggle').forEach(function (btn) {
+    var cid = btn.getAttribute('data-edit-for');
+    var rendered = document.querySelector('[data-rendered-for="' + cid + '"]');
+    var panel = document.querySelector('[data-edit-panel="' + cid + '"]');
+    var textarea = document.querySelector('[data-edit-textarea="' + cid + '"]');
+    var statusEl = document.querySelector('[data-edit-status="' + cid + '"]');
+    var sourceFile = textarea.getAttribute('data-source-file');
+    var loaded = false;
+
+    function openEdit() {
+      rendered.hidden = true;
+      panel.hidden = false;
+      btn.textContent = '✕ סגירה';
+      if (!loaded) {
+        textarea.value = 'טוען...';
+        fetch(WORKER_URL + '?file=' + encodeURIComponent(sourceFile)).then(function (res) {
+          if (!res.ok) throw new Error('http-' + res.status);
+          return res.json();
+        }).then(function (data) {
+          textarea.value = data.content;
+          loaded = true;
+        }).catch(function () {
+          textarea.value = '';
+          setStatus(statusEl, 'error', 'טעינת הטקסט נכשלה - נסו לסגור ולפתוח שוב');
+        });
+      }
+    }
+    function closeEdit() {
+      rendered.hidden = false;
+      panel.hidden = true;
+      btn.textContent = '✎ עריכה';
+    }
+    btn.addEventListener('click', function () {
+      if (panel.hidden) openEdit(); else closeEdit();
+    });
+    panel.querySelector('.chapter-edit-cancel').addEventListener('click', closeEdit);
+    panel.querySelector('.chapter-edit-save').addEventListener('click', function () {
+      setStatus(statusEl, 'saving', 'שומר...');
+      fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: 'chapter', file: sourceFile, content: textarea.value })
+      }).then(function (res) {
+        if (!res.ok) throw new Error('http-' + res.status);
+        setStatus(statusEl, 'saved', '✓ נשמר - האתר יתעדכן תוך כדקה');
+        rendered.innerHTML = quickRenderChapter(textarea.value);
+        closeEdit();
+      }).catch(function () {
+        setStatus(statusEl, 'error', 'השמירה נכשלה - נסו שוב');
+      });
+    });
+  });
 })();
 </script>
 

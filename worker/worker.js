@@ -1,13 +1,34 @@
-// פרוקסי קטן: מקבל הערת קורא מהאתר הציבורי (בלי שום התחברות מהקורא),
-// ושומר אותה ישירות ב-06-הערות-קוראים.md בעזרת מפתח GitHub שמור בענן (סוד),
+// פרוקסי קטן: מקבל שינויים מהאתר הציבורי (בלי שום התחברות מהצד השני),
+// ושומר אותם ישירות בריפו בעזרת מפתח GitHub שמור בענן (סוד),
 // שלעולם לא נחשף לדפדפן של הקורא.
+//
+// שתי יכולות:
+//  - הערות קוראים (קובץ יחיד, 06-הערות-קוראים.md) - כתיבה ממוקדת לפי מזהה פרק.
+//  - עריכת הסיפור עצמו - קריאה/כתיבה של קובצי הפרקים ב-03-פרקים/,
+//    מוגבלת לרשימה סגורה של קבצים (whitelist) כדי שאי אפשר יהיה לכתוב
+//    לשום קובץ אחר בריפו (כמו workflow או את ה-worker עצמו).
 
 const OWNER = "bursteinori-bot";
 const REPO = "saba-story-archive";
 const NOTES_PATH = "06-הערות-קוראים.md";
 const BRANCH = "main";
 const ALLOWED_ORIGIN = "https://bursteinori-bot.github.io";
-const MAX_TEXT_LENGTH = 4000;
+const MAX_NOTE_LENGTH = 4000;
+const MAX_CHAPTER_LENGTH = 40000;
+
+// כל קובץ שמותר לערוך מהאתר - שום דבר אחר לא יתקבל, גם אם יתבקש.
+const EDITABLE_CHAPTER_FILES = new Set([
+  "03-פרקים/פרק-01-שורשים.md",
+  "03-פרקים/פרק-02-המלחמה.md",
+  "03-פרקים/פרק-03-ירושלים.md",
+  "03-פרקים/פרק-04-ילד-של-משפחות-אחרות.md",
+  "03-פרקים/פרק-05-הילד-עם-הציורים.md",
+  "03-פרקים/פרק-06-הארמון.md",
+  "03-פרקים/פרק-07-אחת-בחודש-באוטובוס.md",
+  "03-פרקים/פרק-08-פוטו.md",
+  "03-פרקים/פרק-09-לבנות-את-עצמי-לבד.md",
+  "03-פרקים/פרק-10-לאיזה-כוכב-הגעתי.md",
+]);
 
 function corsHeaders() {
   return {
@@ -17,10 +38,10 @@ function corsHeaders() {
   };
 }
 
-function json(data, status) {
+function json(data, status, extraHeaders) {
   return new Response(JSON.stringify(data), {
     status: status || 200,
-    headers: { "Content-Type": "application/json; charset=utf-8", ...corsHeaders() },
+    headers: { "Content-Type": "application/json; charset=utf-8", ...corsHeaders(), ...(extraHeaders || {}) },
   });
 }
 
@@ -48,7 +69,7 @@ function replaceNoteSection(fullText, chapterId, newBody) {
 }
 
 async function ghFetch(path, token, init) {
-  const res = await fetch("https://api.github.com/repos/" + OWNER + "/" + REPO + path, {
+  return fetch("https://api.github.com/repos/" + OWNER + "/" + REPO + path, {
     ...init,
     headers: {
       Authorization: "Bearer " + token,
@@ -57,21 +78,57 @@ async function ghFetch(path, token, init) {
       ...(init && init.headers),
     },
   });
-  return res;
 }
 
-async function handleGet(env) {
-  const getRes = await ghFetch("/contents/" + encodeURIComponent(NOTES_PATH) + "?ref=" + BRANCH, env.GH_TOKEN);
-  if (!getRes.ok) {
-    return json({ error: "could not read notes file (" + getRes.status + ")" }, 502);
+async function readFile(path, token) {
+  const res = await ghFetch("/contents/" + encodeURIComponent(path) + "?ref=" + BRANCH, token);
+  if (!res.ok) return null;
+  const data = await res.json();
+  return { sha: data.sha, content: b64DecodeUnicode(data.content.replace(/\n/g, "")) };
+}
+
+async function writeFile(path, token, content, sha, message) {
+  return ghFetch("/contents/" + encodeURIComponent(path), token, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, content: b64EncodeUnicode(content), sha, branch: BRANCH }),
+  });
+}
+
+async function handleGet(request, env) {
+  const url = new URL(request.url);
+  const fileParam = url.searchParams.get("file");
+
+  if (fileParam) {
+    if (!EDITABLE_CHAPTER_FILES.has(fileParam)) {
+      return json({ error: "unknown file" }, 400);
+    }
+    const file = await readFile(fileParam, env.GH_TOKEN);
+    if (!file) return json({ error: "could not read chapter file" }, 502);
+    return json({ content: file.content });
   }
-  const fileData = await getRes.json();
-  const content = b64DecodeUnicode(fileData.content.replace(/\n/g, ""));
+
+  const file = await readFile(NOTES_PATH, env.GH_TOKEN);
+  if (!file) return json({ error: "could not read notes file" }, 502);
   // מטמון קצר בקצה הרשת של Cloudflare - מספיק כדי לא להכביד על ה-API
   // של GitHub בזמן שכמה בני משפחה גולשים בו-זמנית, בלי לגרום לעיכוב מורגש.
-  return new Response(JSON.stringify({ content }), {
-    headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=15", ...corsHeaders() },
-  });
+  return json({ content: file.content }, 200, { "Cache-Control": "public, max-age=15" });
+}
+
+async function handleSaveNote(body) {
+  const chapterId = String(body.chapterId || "");
+  const text = String(body.text || "");
+  if (!/^chapter-\d{1,3}$/.test(chapterId)) return json({ error: "invalid chapterId" }, 400);
+  if (text.length > MAX_NOTE_LENGTH) return json({ error: "note too long" }, 400);
+  return { path: NOTES_PATH, message: "הערת קורא: " + chapterId, buildContent: (current) => replaceNoteSection(current, chapterId, text) };
+}
+
+async function handleSaveChapter(body) {
+  const file = String(body.file || "");
+  const content = String(body.content || "");
+  if (!EDITABLE_CHAPTER_FILES.has(file)) return json({ error: "unknown file" }, 400);
+  if (content.length > MAX_CHAPTER_LENGTH || content.trim().length === 0) return json({ error: "invalid chapter content" }, 400);
+  return { path: file, message: "עריכת קורא: " + file, buildContent: () => content };
 }
 
 export default {
@@ -81,7 +138,7 @@ export default {
     }
     if (request.method === "GET") {
       try {
-        return await handleGet(env);
+        return await handleGet(request, env);
       } catch (e) {
         return json({ error: "unexpected error: " + e.message }, 500);
       }
@@ -97,35 +154,16 @@ export default {
       return json({ error: "invalid JSON" }, 400);
     }
 
-    const chapterId = String(body.chapterId || "");
-    const text = String(body.text || "");
-
-    if (!/^chapter-\d{1,3}$/.test(chapterId)) {
-      return json({ error: "invalid chapterId" }, 400);
-    }
-    if (text.length > MAX_TEXT_LENGTH) {
-      return json({ error: "note too long" }, 400);
-    }
-
     try {
-      const getRes = await ghFetch("/contents/" + encodeURIComponent(NOTES_PATH) + "?ref=" + BRANCH, env.GH_TOKEN);
-      if (!getRes.ok) {
-        return json({ error: "could not read notes file (" + getRes.status + ")" }, 502);
-      }
-      const fileData = await getRes.json();
-      const currentContent = b64DecodeUnicode(fileData.content.replace(/\n/g, ""));
-      const updated = replaceNoteSection(currentContent, chapterId, text);
+      const kind = String(body.kind || "note");
+      const plan = kind === "chapter" ? await handleSaveChapter(body) : await handleSaveNote(body);
+      if (plan instanceof Response) return plan; // ולידציה נכשלה
 
-      const putRes = await ghFetch("/contents/" + encodeURIComponent(NOTES_PATH), env.GH_TOKEN, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: "הערת קורא: " + chapterId,
-          content: b64EncodeUnicode(updated),
-          sha: fileData.sha,
-          branch: BRANCH,
-        }),
-      });
+      const current = await readFile(plan.path, env.GH_TOKEN);
+      if (!current) return json({ error: "could not read target file" }, 502);
+      const updated = plan.buildContent(current.content);
+
+      const putRes = await writeFile(plan.path, env.GH_TOKEN, updated, current.sha, plan.message);
       if (!putRes.ok) {
         const errBody = await putRes.text();
         return json({ error: "save failed (" + putRes.status + ")", detail: errBody.slice(0, 200) }, 502);

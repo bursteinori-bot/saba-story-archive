@@ -134,6 +134,38 @@
     box-shadow: var(--shadow-soft); color: var(--ink-2);
     font-size: .8rem; font-weight: 600; letter-spacing: .05em; margin-bottom: 1rem;
   }
+  /* עריכה ישירה של טקסט הפרק - בלי שום התחברות */
+  .chapter-edit-toggle {
+    position: absolute; top: 1.6rem; inset-inline-end: 1.8rem;
+    font-family: "Heebo", sans-serif; font-size: .78rem; font-weight: 600;
+    color: var(--ink-2); background: var(--glass-strong);
+    border: 1px solid var(--glass-border); border-radius: 999px;
+    padding: 5px 14px; cursor: pointer; box-shadow: var(--shadow-soft);
+  }
+  .chapter-edit-toggle:hover { color: var(--ink); }
+  .chapter-edit-panel[hidden] { display: none; }
+  .chapter-edit-hint {
+    font-family: "Heebo", sans-serif; font-size: .82rem; color: var(--ink-3);
+    line-height: 1.7; margin: 0 0 .8rem;
+  }
+  .chapter-edit-textarea {
+    width: 100%; min-height: 360px; padding: 1.1rem 1.3rem;
+    background: rgba(255,255,255,.7); border: 1px solid var(--glass-border);
+    border-radius: 14px; font-family: "Frank Ruhl Libre", serif; font-size: 1.05rem;
+    line-height: 1.8; color: var(--ink); resize: vertical; box-sizing: border-box;
+  }
+  .chapter-edit-textarea:focus { border-color: rgba(27,42,65,.35); background: #fff; outline: none; }
+  .chapter-edit-actions { display: flex; gap: .6rem; margin-top: .9rem; }
+  .chapter-edit-actions button {
+    font-family: "Heebo", sans-serif; font-size: .85rem; font-weight: 600;
+    padding: 8px 20px; border-radius: 999px; cursor: pointer; border: none;
+  }
+  .chapter-edit-save { background: var(--ink); color: #fff; }
+  .chapter-edit-cancel { background: rgba(27,42,65,.07); color: var(--ink-2); }
+  .chapter-edit-status { min-height: 1.2em; margin-top: .6rem; font-size: .8rem; color: var(--ink-3); }
+  .chapter-edit-status.saving { color: var(--ink-3); }
+  .chapter-edit-status.saved { color: #2f7a4d; }
+  .chapter-edit-status.error { color: #b3432b; }
   article.chapter h2 { font-weight: 800; font-size: 1.9rem; color: var(--ink); margin: 0 0 1.8rem; }
   article.chapter p {
     font-family: "Frank Ruhl Libre", serif; font-size: 1.2rem;
@@ -484,7 +516,9 @@
 
   <article class="chapter" id="chapter-1">
     <span class="eyebrow">תקופה: שורשי המשפחה - בודפשט וביירות, תחילת המאה ה-20</span>
-    <h2>שני נהרות</h2>
+    <button type="button" class="chapter-edit-toggle" data-edit-for="chapter-1" title="לערוך את הפרק הזה">✎ עריכה</button>
+    <div class="chapter-rendered" data-rendered-for="chapter-1">
+      <h2>שני נהרות</h2>
     <p>כל סיפור חיים מתחיל הרבה לפני הלידה. הסיפור של יוסי קליין מתחיל בשני קצוות של העולם היהודי, בשתי משפחות שלא ידעו זו על קיומה של זו - האחת על גדות הדנובה, השנייה על חוף הים התיכון - ושההיסטוריה תגלגל את שתיהן, בדרכים עקלקלות ולפעמים אכזריות, אל אותה ארץ קטנה ואל אותו סיפור.</p>
     <p>מצד האב: משפחת קליין ההונגרית. דזירה ואליזבת קליין עזבו את הונגריה אחרי מלחמת העולם הראשונה, בסביבות 1925, והיגרו לצרפת. דזירה - &quot;דזירה זה דוד בהונגרית,&quot; יסביר יוסי לימים לנכדו - עבד במפעל רנו חמש-עשרה שנה, פועל יהודי-הונגרי בלב התעשייה הצרפתית, עד 1940. באותה שנה נכנסו לתוקף חוקי וישי נגד היהודים, ודלתות המפעל נסגרו בפניו.</p>
     <p>בנם אדלברט - אלברט - נולד עוד בבודפשט, ב-31 בדצמבר 1922, ערב השנה החדשה, וגדל בצרפת. היו לו שתי אחיות, לילי ואדל, שני אחים, פאולו ורוז&#x27;ה, וחצי-אח מנישואיה הראשונים של אליזבת - גסטון. משפחה גדולה, צפופה, מהגרת, שעוד תצטרך את כל כושר ההישרדות שלה בשנים שיבואו.</p>
@@ -497,6 +531,16 @@
     <div class="historical-note"><strong>הערת רקע היסטורי</strong>גל ההגירה של יהודי הונגריה מערבה אחרי מלחמת העולם הראשונה ופירוק האימפריה האוסטרו-הונגרית הביא עשרות אלפי יהודים לצרפת, שנזקקה לידיים עובדות בתעשייה. &quot;תקנון היהודים&quot; (Statut des Juifs) של משטר וישי מאוקטובר 1940 הדיר יהודים ממשרות ציבוריות ומענפי תעסוקה שלמים - הרקע לפיטוריו של דזירה מרנו. הקהילה היהודית של ביירות מנתה באמצע המאה כמה אלפי נפשות ושגשגה עד מלחמת האזרחים ב-1975. (להשלמה ואימות: זהות מלך מצרים - ראו שאלות פתוחות.)</div>
     <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>מי היה מלך מצרים בסיפור (פארוק? פואד?) ובאיזה דור בדיוק מדובר - סבו של יוסף דישי? מה שמות שלוש האחיות הנוספות של דולי? מה עלה בגורל בני המשפחה שנשארו בלבנון?</div>
     </aside>
+    </div>
+    <div class="chapter-edit-panel" data-edit-panel="chapter-1" hidden>
+      <p class="chapter-edit-hint">עריכה ישירה של טקסט הפרק (בפורמט Markdown הפשוט שלנו - שורות ריקות מפרידות בין פסקאות). השינוי יופיע באתר תוך כדקה מהשמירה.</p>
+      <textarea class="chapter-edit-textarea" data-edit-textarea="chapter-1" data-source-file="03-פרקים/פרק-01-שורשים.md">טוען...</textarea>
+      <div class="chapter-edit-actions">
+        <button type="button" class="chapter-edit-save" data-edit-save="chapter-1">שמור</button>
+        <button type="button" class="chapter-edit-cancel" data-edit-cancel="chapter-1">ביטול</button>
+      </div>
+      <div class="chapter-edit-status" data-edit-status="chapter-1"></div>
+    </div>
     <div class="grandpa-note">
       <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
       <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר ישירות באתר, בלי צורך להתחבר לשום מקום.</div>
@@ -508,7 +552,9 @@
 
   <article class="chapter" id="chapter-2">
     <span class="eyebrow">תקופה: מלחמת העולם השנייה - פריז וצרפת החופשית, 1942–1944</span>
-    <h2>הבחורה מהמטרו</h2>
+    <button type="button" class="chapter-edit-toggle" data-edit-for="chapter-2" title="לערוך את הפרק הזה">✎ עריכה</button>
+    <div class="chapter-rendered" data-rendered-for="chapter-2">
+      <h2>הבחורה מהמטרו</h2>
     <p>יום אחד, ברכבת התחתית של פריז, ניגשה בחורה אל אלברט קליין ואמרה לו משפט אחד: אל תחזור הביתה היום. הערב יהיה איסוף של יהודים.</p>
     <p>אלברט היה אז בן תשע-עשרה, בלונדיני, בעל עיניים בהירות - &quot;הוא לא נראה יהודי בכלל,&quot; יאמר עליו בנו לימים, &quot;יאלי, הנכדה, יש לה את אותן עיניים.&quot; הוא הבין מיד. הוא אסף את שתי אחיותיו, לילי ואדל, ועוד אח, ויצא לדרך דרומה - אל צרפת החופשית, שהגרמנים עוד לא כבשו.</p>
     <p>הדרך דרומה עברה ברכבת, והרכבת עברה בליון. שם, במרכז צרפת, הציבו הגרמנים מחסום ובדקו את ניירותיהם של כל היורדים. אלברט נתן לאחיו הוראה אחת: לא ללכת אחד אחרי השני. להשתלב בתור לסירוגין - אחד כן, אחד לא. והגרמנים, שיטתיים, בדקו את הניירות של כל שני בתור: את זה שלפניהם ואת זה שאחריהם. ארבעה צעירים יהודים עברו תחת אפם של הבודקים, אחד-אחד, בלי שנבדק אף אחד מהם.</p>
@@ -522,6 +568,16 @@
     <div class="historical-note"><strong>הערת רקע היסטורי</strong>האזהרה במטרו מתיישבת עם &quot;אקציית ולודרום ד&#x27;איבר&quot; (רַאפְל דו וֶל d&#x27;Hiv), 16–17 ביולי 1942 - המצוד הגדול על יהודי פריז, שבוצע בידי המשטרה הצרפתית ושמועות עליו דלפו מראש והצילו רבים. קו התיחום (Ligne de démarcation) חצה את צרפת עד נובמבר 1942, אז כבשו הגרמנים גם את הדרום. ה&quot;מיליס&quot; (Milice) הייתה מיליציה צרפתית פשיסטית ששיתפה פעולה עם הגסטפו; בטיהורים שאחרי השחרור (l&#x27;Épuration) הוצאו להורג אלפי משתפי פעולה.</div>
     <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>מי היה האח הנוסף שברח דרומה (פאולו? רוז&#x27;ה? גסטון?) - ומה עבר על שאר האחים במלחמה? היכן שהו בדרום ואיך חיו עד השחרור? מי הדוד שאיבד את בנו (&quot;כל הדודים ניצלו חוץ מאחד&quot;)?</div>
     </aside>
+    </div>
+    <div class="chapter-edit-panel" data-edit-panel="chapter-2" hidden>
+      <p class="chapter-edit-hint">עריכה ישירה של טקסט הפרק (בפורמט Markdown הפשוט שלנו - שורות ריקות מפרידות בין פסקאות). השינוי יופיע באתר תוך כדקה מהשמירה.</p>
+      <textarea class="chapter-edit-textarea" data-edit-textarea="chapter-2" data-source-file="03-פרקים/פרק-02-המלחמה.md">טוען...</textarea>
+      <div class="chapter-edit-actions">
+        <button type="button" class="chapter-edit-save" data-edit-save="chapter-2">שמור</button>
+        <button type="button" class="chapter-edit-cancel" data-edit-cancel="chapter-2">ביטול</button>
+      </div>
+      <div class="chapter-edit-status" data-edit-status="chapter-2"></div>
+    </div>
     <div class="grandpa-note">
       <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
       <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר ישירות באתר, בלי צורך להתחבר לשום מקום.</div>
@@ -533,7 +589,9 @@
 
   <article class="chapter" id="chapter-3">
     <span class="eyebrow">תקופה: מרסיי, חיפה, ירושלים - 1945–1953</span>
-    <h2>איזה אושר - נתנו לי נשק</h2>
+    <button type="button" class="chapter-edit-toggle" data-edit-for="chapter-3" title="לערוך את הפרק הזה">✎ עריכה</button>
+    <div class="chapter-rendered" data-rendered-for="chapter-3">
+      <h2>איזה אושר - נתנו לי נשק</h2>
     <p>אחרי המלחמה מצא אלברט קליין, הנגר, את הייעוד המוזר והיפה ביותר שנגר יהודי יכול היה למצוא באותן שנים: הוא בנה מיטות לספינות המעפילים.</p>
     <p>בנמל מרסיי, בשירות ההגנה, הוא התקין דרגשי עץ בבטן אוניות רעועות - &quot;כמו הסיפור של אקסודוס,&quot; יסביר יוסי - כדי שאלפי ניצולים יוכלו לשכב בהן בדרכם ארצה. לפעמים האוניות נתפסו בידי הבריטים, לפעמים עברו. שלוש שנים הוא בנה מיטות לאחרים, עד שבשנת 1948, כך במילותיו של בנו, &quot;נמאס לו לעשות מיטות והוא החליט לעלות בעצמו.&quot;</p>
     <p>הוא הגיע לנמל חיפה בעיצומה של מלחמת העצמאות, בלי מילה של עברית. עוד באותו יום קיבל רובה ושובץ בצבא החדש, בגדוד דוברי הצרפתית של המח&quot;ל - מתנדבי חוץ לארץ.</p>
@@ -547,6 +605,16 @@
     <div class="historical-note"><strong>הערת רקע היסטורי</strong>במסגרת המח&quot;ל (מתנדבי חוץ לארץ) שירתו במלחמת העצמאות כ-4,000 מתנדבים מכ-40 מדינות, ובהם מאות דוברי צרפתית. ההעפלה מנמלי דרום צרפת (מרסיי, סֶט - ממנו הפליגה &quot;אקסודוס&quot; ב-1947) הייתה נתיב מרכזי של ניצולי השואה ארצה בשנים 1945–1948.</div>
     <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>דרך איזו מסגרת עלתה דולי (עליית הנוער? כפר גלעדי הוזכר בשיחה - מה היה שם)? מה עשתה בצבא? היכן בדיוק גרו בירושלים? והאם יש השערה למה עזבו ב-1953 - פרנסה? משפחה? הצנע?</div>
     </aside>
+    </div>
+    <div class="chapter-edit-panel" data-edit-panel="chapter-3" hidden>
+      <p class="chapter-edit-hint">עריכה ישירה של טקסט הפרק (בפורמט Markdown הפשוט שלנו - שורות ריקות מפרידות בין פסקאות). השינוי יופיע באתר תוך כדקה מהשמירה.</p>
+      <textarea class="chapter-edit-textarea" data-edit-textarea="chapter-3" data-source-file="03-פרקים/פרק-03-ירושלים.md">טוען...</textarea>
+      <div class="chapter-edit-actions">
+        <button type="button" class="chapter-edit-save" data-edit-save="chapter-3">שמור</button>
+        <button type="button" class="chapter-edit-cancel" data-edit-cancel="chapter-3">ביטול</button>
+      </div>
+      <div class="chapter-edit-status" data-edit-status="chapter-3"></div>
+    </div>
     <div class="grandpa-note">
       <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
       <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר ישירות באתר, בלי צורך להתחבר לשום מקום.</div>
@@ -558,7 +626,9 @@
 
   <article class="chapter" id="chapter-4">
     <span class="eyebrow">תקופה: צרפת, 1953–1960 - משפחות אומנה, הגירושים, והפרידה מז&#x27;קי</span>
-    <h2>ילד של משפחות אחרות</h2>
+    <button type="button" class="chapter-edit-toggle" data-edit-for="chapter-4" title="לערוך את הפרק הזה">✎ עריכה</button>
+    <div class="chapter-rendered" data-rendered-for="chapter-4">
+      <h2>ילד של משפחות אחרות</h2>
     <p>מהשנים שבהן הוריו חיו יחד, יוסי לא זוכר כמעט כלום. &quot;אני לא זוכר אותם ביחד יותר מדי, ואני לא זוכר שחייתי איתם.&quot; מגיל צעיר מאוד הושם במשפחות אומנה, וכמעט מדי שנה עבר לבית אחר, למשפחה אחרת, לכפר אחר. כשנשאל אם היה לו רע, הוא עונה בפשטות שמפתיעה:</p>
     <blockquote>&quot;אני זוכר שלא היה לי רע. באמת לא. הייתי ילד מאוד חביב.&quot;</blockquote>
     <p>אבל מיד אחר-כך מגיע המשפט השני, זה שמתחתיו תהום: &quot;עד גיל תשע לא ידעתי מה זה תא משפחתי.&quot; רוב המשפחות היו נוצריות, ובימי ראשון היו שולחים אותו איתן לכנסייה, למיסה. הוא דווקא נהנה - הוא אהב לשמוע את הכומר שר. איש לא טרח לספר לו שהוא יהודי. הוא גילה זאת רק בגיל תשע. ומהמעברים התכופים נשארה עוד צלקת שקטה: עד גיל חמש-עשרה לא נשארו לו חברים. &quot;כל החברים שלי היו זמניים. לא היו תנאים בשביל זה.&quot;</p>
@@ -571,6 +641,16 @@
     <div class="historical-note"><strong>הערת רקע היסטורי</strong>השמת ילדים במשפחות אומנה כפריות (nourrice, familles d&#x27;accueil) הייתה נפוצה מאוד בצרפת של שנות החמישים בקרב משפחות מהגרים בקשיים כלכליים או משפחתיים; ילדי הערים נשלחו לכפרים, לעיתים במרחק שעות מהבית, והקשר עם ההורים הצטמצם לביקורים נדירים.</div>
     <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>באילו אזורים/כפרים היו משפחות האומנה? האם זכור לו שם של משפחה אחת לפחות? מתי בדיוק נשלח ז&#x27;קי לישראל (יוסי בן ~9–10?), והאם מישהו ליווה אותו בטיסה?</div>
     </aside>
+    </div>
+    <div class="chapter-edit-panel" data-edit-panel="chapter-4" hidden>
+      <p class="chapter-edit-hint">עריכה ישירה של טקסט הפרק (בפורמט Markdown הפשוט שלנו - שורות ריקות מפרידות בין פסקאות). השינוי יופיע באתר תוך כדקה מהשמירה.</p>
+      <textarea class="chapter-edit-textarea" data-edit-textarea="chapter-4" data-source-file="03-פרקים/פרק-04-ילד-של-משפחות-אחרות.md">טוען...</textarea>
+      <div class="chapter-edit-actions">
+        <button type="button" class="chapter-edit-save" data-edit-save="chapter-4">שמור</button>
+        <button type="button" class="chapter-edit-cancel" data-edit-cancel="chapter-4">ביטול</button>
+      </div>
+      <div class="chapter-edit-status" data-edit-status="chapter-4"></div>
+    </div>
     <div class="grandpa-note">
       <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
       <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר ישירות באתר, בלי צורך להתחבר לשום מקום.</div>
@@ -582,7 +662,9 @@
 
   <article class="chapter" id="chapter-5">
     <span class="eyebrow">תקופה: בית הספר הכפרי, גיל 7–8 - היום האחרון של שנת הלימודים</span>
-    <h2>הילד עם הציורים</h2>
+    <button type="button" class="chapter-edit-toggle" data-edit-for="chapter-5" title="לערוך את הפרק הזה">✎ עריכה</button>
+    <div class="chapter-rendered" data-rendered-for="chapter-5">
+      <h2>הילד עם הציורים</h2>
     <p>יש רגעים שאדם נושא איתו שבעים שנה, והם לא מתעמעמים אלא מתחדדים. &quot;אני שומר זיכרון ילדות מדויק מאוד, נטוע עמוק בתוכי,&quot; כותב יוסי. זה קרה ביום האחרון של שנת הלימודים, לפני החופש הגדול, בבית הספר של הכפר.</p>
     <p>בדרך הביתה נהגו הילדים להציק לתלמידים אחרים, ולרוב לילד אחד - ילד צעיר ממוצא אפריקאי, השונה היחיד בנוף הכפרי. יוסי לא צפה מהצד; הוא היה שם, עם החבר&#x27;ה. הוא היה ילד חזק - &quot;לא היו מתעסקים איתי, הייתי נכנס בו בקלות, גדול, קטן&quot; - ובחבורה של ילדים, הכוח יודע למצוא לעצמו חלש.</p>
     <p>באותו יום אחרון צעד הילד לתומו, כשכמה בנים פתחו את ילקוטו והפכו אותו. דפים עפו באוויר, מסתחררים על הכביש הכפרי.</p>
@@ -595,6 +677,16 @@
     <aside class="margin-notes">
     <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>מה צויר בדפים - הוא זוכר ציור אחד מהם? באיזה כפר זה היה? והאם יש עוד רגעים מאותם בתי ספר כפריים שנחקקו בו?</div>
     </aside>
+    </div>
+    <div class="chapter-edit-panel" data-edit-panel="chapter-5" hidden>
+      <p class="chapter-edit-hint">עריכה ישירה של טקסט הפרק (בפורמט Markdown הפשוט שלנו - שורות ריקות מפרידות בין פסקאות). השינוי יופיע באתר תוך כדקה מהשמירה.</p>
+      <textarea class="chapter-edit-textarea" data-edit-textarea="chapter-5" data-source-file="03-פרקים/פרק-05-הילד-עם-הציורים.md">טוען...</textarea>
+      <div class="chapter-edit-actions">
+        <button type="button" class="chapter-edit-save" data-edit-save="chapter-5">שמור</button>
+        <button type="button" class="chapter-edit-cancel" data-edit-cancel="chapter-5">ביטול</button>
+      </div>
+      <div class="chapter-edit-status" data-edit-status="chapter-5"></div>
+    </div>
     <div class="grandpa-note">
       <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
       <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר ישירות באתר, בלי צורך להתחבר לשום מקום.</div>
@@ -606,7 +698,9 @@
 
   <article class="chapter" id="chapter-6">
     <span class="eyebrow">תקופה: מעון הילדים של אוז&quot;ה, גיל 8–9 (~1959–1960)</span>
-    <h2>הארמון</h2>
+    <button type="button" class="chapter-edit-toggle" data-edit-for="chapter-6" title="לערוך את הפרק הזה">✎ עריכה</button>
+    <div class="chapter-rendered" data-rendered-for="chapter-6">
+      <h2>הארמון</h2>
     <p>בכל ימי שישי היה ריח של שניצל.</p>
     <p>זה אחד הפרטים הראשונים שיוסי שולף כשהוא מדבר על השנה ההיא - השנה החשובה של ילדותו, כהגדרתו: &quot;זה קטע חשוב בחיים שלי, מפני שפה פתאום גיליתי שאני יהודי. קודם כל.&quot;</p>
     <p>אביו רשם אותו למעון ילדים של ארגון אוז&quot;ה - ארגון יהודי שאסף אחרי המלחמה ילדים שנותרו בלי הורים, יתומי שואה. המעון שכן בארמון. ארמון אמיתי - &quot;ארמון של איזו מלכה,&quot; כך סופר לילדים - שהארגון קנה ושיכן בו עשרים-שלושים ילדים וילדות.</p>
@@ -623,6 +717,16 @@
     <div class="historical-note"><strong>הערת רקע היסטורי</strong>אוז&quot;ה (OSE - Œuvre de Secours aux Enfants, &quot;אגודת סעד הילדים&quot;) הוא ארגון יהודי שנוסד ב-1912 וכיום פועל בצרפת; במלחמה הציל אלפי ילדים יהודים במסתור, ואחריה הפעיל עשרות בתי ילדים בטירות ובאחוזות ברחבי צרפת עבור יתומי השואה - המפורסם שבהם בטירת אנדלי (Château de Vaucelles ואחרים). ילדים שהוריהם חיו אך לא תפקדו התקבלו גם הם. איתור הארמון הספציפי - משימה לפגישה הבאה.</div>
     <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>היכן היה הארמון (אזור פריז? שם המקום?) - אפשר לנסות לזהות יחד מתוך רשימת בתי הילדים של אוז&quot;ה. האם זוכר שמות של מדריכים או חברים משם? כמה זמן היה שם בסך הכול - שנה אחת?</div>
     </aside>
+    </div>
+    <div class="chapter-edit-panel" data-edit-panel="chapter-6" hidden>
+      <p class="chapter-edit-hint">עריכה ישירה של טקסט הפרק (בפורמט Markdown הפשוט שלנו - שורות ריקות מפרידות בין פסקאות). השינוי יופיע באתר תוך כדקה מהשמירה.</p>
+      <textarea class="chapter-edit-textarea" data-edit-textarea="chapter-6" data-source-file="03-פרקים/פרק-06-הארמון.md">טוען...</textarea>
+      <div class="chapter-edit-actions">
+        <button type="button" class="chapter-edit-save" data-edit-save="chapter-6">שמור</button>
+        <button type="button" class="chapter-edit-cancel" data-edit-cancel="chapter-6">ביטול</button>
+      </div>
+      <div class="chapter-edit-status" data-edit-status="chapter-6"></div>
+    </div>
     <div class="grandpa-note">
       <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
       <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר ישירות באתר, בלי צורך להתחבר לשום מקום.</div>
@@ -634,7 +738,9 @@
 
   <article class="chapter" id="chapter-7">
     <span class="eyebrow">תקופה: הביקורים אצל דולי - מגיל ~10 ואילך</span>
-    <h2>אחת בחודש, באוטובוס לפריז</h2>
+    <button type="button" class="chapter-edit-toggle" data-edit-for="chapter-7" title="לערוך את הפרק הזה">✎ עריכה</button>
+    <div class="chapter-rendered" data-rendered-for="chapter-7">
+      <h2>אחת בחודש, באוטובוס לפריז</h2>
     <p>בית המשפט הצרפתי קבע: ביקור אצל האם פעם בחודש. וכך, פעם בחודש, היה ילד בן עשר עולה לבדו על אוטובוס בפרוור של פריז, מחליף קווים בביטחון של נוסע ותיק - &quot;הסתדרתי מצוין עם החלפת הקווים&quot; - ונוסע אל הרובע ה-17.</p>
     <p>שם, בדירה זעירה, חיה דולי עם בן זוגה ז&#x27;ילבר, מורה בבית ספר יסודי. &quot;לא ידעתי להעריך אותו כראוי,&quot; כותב יוסי בכנות של מי שמסתכל אחורה. ילדים משותפים לא היו להם.</p>
     <p>על היחסים עם אמו הוא מדבר בלי כחל וסרק: &quot;יחסים די קרים. היא לא גידלה אותי.&quot; וכשמבקשים הסבר, הוא עונה במשפט שיש בו יותר השלמה מכעס: &quot;כנראה שלא הייתה להם סבלנות בשבילי.&quot;</p>
@@ -646,6 +752,16 @@
     <aside class="margin-notes">
     <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>האם זכור לו סרט אחד ספציפי שראה איתה? (זה יכול להיות עוגן יפהפה לסצנה.) מתי ראה את דולי בפעם האחרונה? האם ז&#x27;ילבר הוא &quot;המורה&quot; שדולי נישאה לו בהמשך, ומה שם משפחתו?</div>
     </aside>
+    </div>
+    <div class="chapter-edit-panel" data-edit-panel="chapter-7" hidden>
+      <p class="chapter-edit-hint">עריכה ישירה של טקסט הפרק (בפורמט Markdown הפשוט שלנו - שורות ריקות מפרידות בין פסקאות). השינוי יופיע באתר תוך כדקה מהשמירה.</p>
+      <textarea class="chapter-edit-textarea" data-edit-textarea="chapter-7" data-source-file="03-פרקים/פרק-07-אחת-בחודש-באוטובוס.md">טוען...</textarea>
+      <div class="chapter-edit-actions">
+        <button type="button" class="chapter-edit-save" data-edit-save="chapter-7">שמור</button>
+        <button type="button" class="chapter-edit-cancel" data-edit-cancel="chapter-7">ביטול</button>
+      </div>
+      <div class="chapter-edit-status" data-edit-status="chapter-7"></div>
+    </div>
     <div class="grandpa-note">
       <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
       <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר ישירות באתר, בלי צורך להתחבר לשום מקום.</div>
@@ -657,7 +773,9 @@
 
   <article class="chapter" id="chapter-8">
     <span class="eyebrow">תקופה: תרז, פוטו והבית - 1960–1968</span>
-    <h2>קומה רביעית בלי מעלית</h2>
+    <button type="button" class="chapter-edit-toggle" data-edit-for="chapter-8" title="לערוך את הפרק הזה">✎ עריכה</button>
+    <div class="chapter-rendered" data-rendered-for="chapter-8">
+      <h2>קומה רביעית בלי מעלית</h2>
     <p>את תרז הוא פגש לפני שידע שהוא אמור לפגוש אותה. יום אחד ביקש ממנו אביו ללכת לאסוף את הדודה אדל מתחנת האוטובוס של פונטו-קומבו. לצד אדל ירדה מהאוטובוס אישה זרה, שהצטרפה להליכה הביתה ושאלה אותו שאלות רבות מדי. &quot;הייתה לי תחושת בטן מוזרה,&quot; הוא כותב. &quot;הבנתי שזה לא היה מקרה שאבי ביקש ממני ללכת לאסוף אותה.&quot; אדל ותרז עבדו יחד כתופרות במפעל; אדל היא שהכירה אותה לאלברט. הילד בן התשע הבין באותה הליכה רגלית שגורלו הוכרע.</p>
     <p>אלברט ותרז נישאו ב-1960, והשלושה עברו לפוטו (Puteaux), פרוור ממערב לפריז. את הדירה יוסי מתאר בדיוק של מודד: קומה רביעית בלי מעלית. שירותים במסדרון הקומה, משותפים. מקלחת - אין. הסלון שימש חדר שינה להורים, והמבואה - הכניסה לדירה - הייתה חדרו של יוסי. שם, במעבר שבין הדלת לסלון, הוא גר שמונה שנים, עד 1968.</p>
     <p>&quot;שנות המגורים המשותפים עם תרז ועם אבי היו קשות,&quot; הוא כותב, &quot;רצף של מריבות ותלונות.&quot; בעל-פה הוא מוסיף את הקצב: &quot;היא אומרת משהו, מעצבנת אותו, הוא לאט-לאט מתחמם - ואופ. הייתי סופר: כמה זמן ייקח עד שיריבו. שתי דקות, שלוש דקות.&quot; לפעמים זה נגמר במכות. גם הוא חטף - כמה פעמים, לעיתים עם חגורה. &quot;הייתי סובל בלי בעיה. הבנתי שאני מעצבן אותו.&quot; ואז, בלי להתבלבל, ההסתייגות ההיסטורית: &quot;אל תשכח את התקופה. היום זה בלתי אפשרי - אז זה היה מקובל.&quot;</p>
@@ -672,6 +790,16 @@
     <div class="historical-note"><strong>הערת רקע היסטורי</strong>פוטו (Puteaux) הייתה בשנות השישים פרוור פועלים אפרורי ממערב לפריז - היום שוכן בה מתחם העסקים לה-דפאנס. דירות ללא מקלחת ועם שירותים משותפים במסדרון היו הנורמה בבנייני פועלים ישנים בפריז ופרווריה עד שנות השבעים. יהדות מרוקו של דור תרז - במיוחד נשים בפריפריה - סבלה משיעורי אנאלפביתיות גבוהים; סיפורה אופייני לנשות דורה.</div>
     <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>מאיפה במרוקו הגיעה תרז ומתי היגרה לצרפת? מה עלה בגורלה (עד מתי חיו היא ואלברט)? מתי נפטר דזירה, וכמה זמן גר איתם? האם נשאר החיבור ההוא מבית הספר או משהו אחר שכתב כילד?</div>
     </aside>
+    </div>
+    <div class="chapter-edit-panel" data-edit-panel="chapter-8" hidden>
+      <p class="chapter-edit-hint">עריכה ישירה של טקסט הפרק (בפורמט Markdown הפשוט שלנו - שורות ריקות מפרידות בין פסקאות). השינוי יופיע באתר תוך כדקה מהשמירה.</p>
+      <textarea class="chapter-edit-textarea" data-edit-textarea="chapter-8" data-source-file="03-פרקים/פרק-08-פוטו.md">טוען...</textarea>
+      <div class="chapter-edit-actions">
+        <button type="button" class="chapter-edit-save" data-edit-save="chapter-8">שמור</button>
+        <button type="button" class="chapter-edit-cancel" data-edit-cancel="chapter-8">ביטול</button>
+      </div>
+      <div class="chapter-edit-status" data-edit-status="chapter-8"></div>
+    </div>
     <div class="grandpa-note">
       <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
       <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר ישירות באתר, בלי צורך להתחבר לשום מקום.</div>
@@ -683,7 +811,9 @@
 
   <article class="chapter" id="chapter-9">
     <span class="eyebrow">תקופה: נעורים בפריז - צופים, ספרים, שומר הצעיר ובית מלאכה למעילים, ~1961–1968</span>
-    <h2>בניתי את עצמי לבד</h2>
+    <button type="button" class="chapter-edit-toggle" data-edit-for="chapter-9" title="לערוך את הפרק הזה">✎ עריכה</button>
+    <div class="chapter-rendered" data-rendered-for="chapter-9">
+      <h2>בניתי את עצמי לבד</h2>
     <p>מהבית בפוטו היה צריך מפלט, ויוסי מצא לו כמה.</p>
     <p>הראשון היה הצופים של צרפת - Scouts de France - שלוש שנים של יציאות לטבע, סלילת שבילים ביערות, לינה באוהלים. שם למד לשחות, ושם עברה על גופו הכשרה ספרטנית שהוא מספר עליה עד היום בחיוך: גם בחורף, גם במינוס עשר מעלות - מכנסיים קצרים. &quot;מת בקור,&quot; הוא מודה, ואז מוסיף את הפואנטה: &quot;אבל מאז הגוף שלי הסתגל. עד היום אני אוהב את הקור.&quot; בישראל של חמש מעלות, כשכולם סביבו מתלוננים שקר להם, הוא צוחק בשקט. וכדאי לדעת: מכנסיים ארוכים היו אז הרף של בגרות. &quot;ילד בצרפת של התקופה שלי - תמיד במכנסיים קצרים. בגיל ארבע-עשרה, כשעברתי סוף-סוף לארוכים, לג&#x27;ינס - זו הייתה חגיגה אמיתית. אתה יודע איזה כבוד זה?&quot;</p>
     <p>המפלט השני היה הספרים. &quot;אף פעם לא הלכתי לישון בלי לקרוא. עד עכשיו, כמעט.&quot; הוא קרא הכול, ובעיקר את הגדולים - ויקטור הוגו, אמיל זולא, &quot;עלובי החיים&quot; - ספרים שילד בגילו לא אמור היה לקרוא. &quot;התקדמתי אולי שנתיים לפני כולם מבחינת ידע. כל פעם שהמורה דיבר על נושא - היסטוריה, ספרות - הייתי בעניינים, עונה, והיו שמים לב.&quot; וגם מוזיקה: בלי שאיש לימד אותו, ידע לזהות בשמיעה שזה מוצרט וזה בטהובן. &quot;באופן טבעי. לא יודע למה זה משך אותי.&quot;</p>
@@ -699,6 +829,16 @@
     <div class="historical-note"><strong>הערת רקע היסטורי</strong>קן השומר הצעיר בפריז היה בשנות השישים מרכז חשוב לנוער יהודי, ושילב חינוך ציוני-חלוצי עם פעילות אינטלקטואלית; רבים מבוגריו עלו ארצה בסוף שנות השישים, ובמיוחד אחרי מלחמת ששת הימים (1967), שעוררה גל עלייה מצרפת. תעשיית הקונפקציה (בגדים ומעילים) הייתה ענף פרנסה יהודי מובהק בפריז, מרוכז ברבעים כמו סנטייה - לרוב עסקים משפחתיים קטנים.</div>
     <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>מי היו הדודים בעלי עסק המעילים (מצד קליין?) והיכן בפריז היה בית המלאכה? מי מחברי השומר הצעיר נשאר חבר עד היום (שמות!)? האם מלחמת ששת הימים ב-67&#x27; השפיעה על ההחלטה לעלות?</div>
     </aside>
+    </div>
+    <div class="chapter-edit-panel" data-edit-panel="chapter-9" hidden>
+      <p class="chapter-edit-hint">עריכה ישירה של טקסט הפרק (בפורמט Markdown הפשוט שלנו - שורות ריקות מפרידות בין פסקאות). השינוי יופיע באתר תוך כדקה מהשמירה.</p>
+      <textarea class="chapter-edit-textarea" data-edit-textarea="chapter-9" data-source-file="03-פרקים/פרק-09-לבנות-את-עצמי-לבד.md">טוען...</textarea>
+      <div class="chapter-edit-actions">
+        <button type="button" class="chapter-edit-save" data-edit-save="chapter-9">שמור</button>
+        <button type="button" class="chapter-edit-cancel" data-edit-cancel="chapter-9">ביטול</button>
+      </div>
+      <div class="chapter-edit-status" data-edit-status="chapter-9"></div>
+    </div>
     <div class="grandpa-note">
       <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
       <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר ישירות באתר, בלי צורך להתחבר לשום מקום.</div>
@@ -710,7 +850,9 @@
 
   <article class="chapter" id="chapter-10">
     <span class="eyebrow">תקופה: העלייה לישראל, 1968–1969</span>
-    <h2>לאיזה כוכב הגעתי</h2>
+    <button type="button" class="chapter-edit-toggle" data-edit-for="chapter-10" title="לערוך את הפרק הזה">✎ עריכה</button>
+    <div class="chapter-rendered" data-rendered-for="chapter-10">
+      <h2>לאיזה כוכב הגעתי</h2>
     <p>ב-1968, אחרי שמונה שנים במבואה של הדירה בפוטו, ארז יוסי בן השבע-עשרה-שמונה-עשרה את חייו ועלה לישראל. הוא נולד בירושלים וחזר אליה כמעט זר - ילד צרפתי עם עברית ששרדה איכשהו מהארמון של אוז&quot;ה ומקן השומר הצעיר.</p>
     <p>מהסיבות לעלייה הוא מונה אחת במפורש, והיא לב הסיפור: &quot;אחת מהסיבות - רציתי לראות את ז&#x27;קי.&quot; האח הקטן שנפרד ממנו בנמל התעופה של פריז, ילד בן חמש שנשלח לבדו למושב משמרת, היה עכשיו נער. שני האחים, שכל אחד מהם גדל אצל מי שלא ילדה אותו, עמדו להיפגש שוב אחרי כמעט עשור.</p>
     <p>ובישראל חיכתה ליוסי תגלית שהוא מספר עליה כמו על נס, למרות - או בגלל - שהיא הדבר הפשוט בעולם. הוא הגיע לדודה לואיז, לחווה במושב, ואחר-כך לדודה אודט. ושם, ליד שולחן, ראה:</p>
@@ -723,6 +865,16 @@
     <div class="historical-note"><strong>הערת רקע היסטורי</strong>בעקבות מלחמת ששת הימים (יוני 1967) גאתה העלייה מצרפת ומארצות המערב; בשנים 1968–1969 עלו מצרפת אלפים, רבים מהם בוגרי תנועות נוער ציוניות. מושב משמרת שבשרון, ביתם של לואיז וז&#x27;קי, נוסד ב-1946.</div>
     <div class="questions"><strong>שאלות פתוחות לבירור עם סבא</strong>איך היה המפגש עצמו עם ז&#x27;קי אחרי עשור - מה אמרו זה לזה? לאן הגיע יוסי קודם (קיבוץ? אולפן? צבא?) ומה עשה בשנה הראשונה? ולסיפור הרב - לוודא את פרטי &quot;זיגלמאיר&quot;: של מי היה השם, ומה בדיוק אמרה דולי?</div>
     </aside>
+    </div>
+    <div class="chapter-edit-panel" data-edit-panel="chapter-10" hidden>
+      <p class="chapter-edit-hint">עריכה ישירה של טקסט הפרק (בפורמט Markdown הפשוט שלנו - שורות ריקות מפרידות בין פסקאות). השינוי יופיע באתר תוך כדקה מהשמירה.</p>
+      <textarea class="chapter-edit-textarea" data-edit-textarea="chapter-10" data-source-file="03-פרקים/פרק-10-לאיזה-כוכב-הגעתי.md">טוען...</textarea>
+      <div class="chapter-edit-actions">
+        <button type="button" class="chapter-edit-save" data-edit-save="chapter-10">שמור</button>
+        <button type="button" class="chapter-edit-cancel" data-edit-cancel="chapter-10">ביטול</button>
+      </div>
+      <div class="chapter-edit-status" data-edit-status="chapter-10"></div>
+    </div>
     <div class="grandpa-note">
       <div class="grandpa-note-label">💬 המקום שלך, סבא</div>
       <div class="grandpa-note-hint">כאן אפשר להוסיף הערות, תיקונים, ותשובות לשאלות הפתוחות שבצד. מה שתכתוב נשמר ישירות באתר, בלי צורך להתחבר לשום מקום.</div>
@@ -1267,6 +1419,90 @@
     });
   });
   loadAllNotes();
+
+  // עריכה ישירה של טקסט הפרק (Markdown גולמי), דרך אותה פונקציה עננית
+  function escapeHtml(s) {
+    var div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  // תצוגה מקדימה מיידית בצד הלקוח - לא זהה ב-100% לעיצוב הסופי (למשל
+  // בלוקים של הערת רקע היסטורי/שאלות פתוחות לא מוצגים כאן), אבל נותנת
+  // משוב מיידי לפני שהאתר נבנה מחדש בפועל תוך כדקה.
+  function quickRenderChapter(rawMd) {
+    var lines = rawMd.replace(/^\s+/, '').split('\n');
+    var title = (lines[0] || '').replace(/^#\s*/, '');
+    var bodyStart = 1;
+    if (lines[1] && /^_.*_$/.test(lines[1].trim())) bodyStart = 2;
+    var body = lines.slice(bodyStart).join('\n');
+    var blocks = body.split(/\n\s*\n/).filter(function (b) { return b.trim(); });
+    var out = '<h2>' + escapeHtml(title) + '</h2>';
+    blocks.forEach(function (b) {
+      b = b.trim();
+      if (b.charAt(0) === '>') {
+        out += '<blockquote>' + escapeHtml(b.replace(/^>\s?/gm, '').replace(/\n/g, ' ')) + '</blockquote>';
+      } else if (/^\*\*(הערת רקע היסטורי|שאלות פתוחות)/.test(b)) {
+        // מוצג כרגיל אחרי הבנייה המחדש הבאה
+      } else {
+        out += '<p>' + escapeHtml(b.replace(/\n/g, ' ')) + '</p>';
+      }
+    });
+    return out;
+  }
+
+  document.querySelectorAll('.chapter-edit-toggle').forEach(function (btn) {
+    var cid = btn.getAttribute('data-edit-for');
+    var rendered = document.querySelector('[data-rendered-for="' + cid + '"]');
+    var panel = document.querySelector('[data-edit-panel="' + cid + '"]');
+    var textarea = document.querySelector('[data-edit-textarea="' + cid + '"]');
+    var statusEl = document.querySelector('[data-edit-status="' + cid + '"]');
+    var sourceFile = textarea.getAttribute('data-source-file');
+    var loaded = false;
+
+    function openEdit() {
+      rendered.hidden = true;
+      panel.hidden = false;
+      btn.textContent = '✕ סגירה';
+      if (!loaded) {
+        textarea.value = 'טוען...';
+        fetch(WORKER_URL + '?file=' + encodeURIComponent(sourceFile)).then(function (res) {
+          if (!res.ok) throw new Error('http-' + res.status);
+          return res.json();
+        }).then(function (data) {
+          textarea.value = data.content;
+          loaded = true;
+        }).catch(function () {
+          textarea.value = '';
+          setStatus(statusEl, 'error', 'טעינת הטקסט נכשלה - נסו לסגור ולפתוח שוב');
+        });
+      }
+    }
+    function closeEdit() {
+      rendered.hidden = false;
+      panel.hidden = true;
+      btn.textContent = '✎ עריכה';
+    }
+    btn.addEventListener('click', function () {
+      if (panel.hidden) openEdit(); else closeEdit();
+    });
+    panel.querySelector('.chapter-edit-cancel').addEventListener('click', closeEdit);
+    panel.querySelector('.chapter-edit-save').addEventListener('click', function () {
+      setStatus(statusEl, 'saving', 'שומר...');
+      fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: 'chapter', file: sourceFile, content: textarea.value })
+      }).then(function (res) {
+        if (!res.ok) throw new Error('http-' + res.status);
+        setStatus(statusEl, 'saved', '✓ נשמר - האתר יתעדכן תוך כדקה');
+        rendered.innerHTML = quickRenderChapter(textarea.value);
+        closeEdit();
+      }).catch(function () {
+        setStatus(statusEl, 'error', 'השמירה נכשלה - נסו שוב');
+      });
+    });
+  });
 })();
 </script>
 
