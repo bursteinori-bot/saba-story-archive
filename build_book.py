@@ -63,7 +63,7 @@ def render_block(b):
     """Returns (kind, html) where kind is 'body' or 'note'."""
     if b.startswith(">"):
         quote = " ".join(ln.lstrip("> ").strip() for ln in b.split("\n"))
-        return "body", f'    <blockquote contenteditable="true">{render_marks(quote)}</blockquote>'
+        return "body", f"    <blockquote>{render_marks(quote)}</blockquote>"
     m = re.match(r"^\*\*הערת רקע היסטורי:\*\*\s*(.*)$", b, re.S)
     if m:
         return "note", ('    <div class="historical-note"><strong>הערת רקע היסטורי</strong>'
@@ -75,7 +75,7 @@ def render_block(b):
     para = " ".join(ln.strip() for ln in b.split("\n"))
     # strip markdown bold/italic markers for plain paragraphs
     para = re.sub(r"\*\*(.+?)\*\*", r"\1", para)
-    return "body", f'    <p contenteditable="true">{render_marks(para)}</p>'
+    return "body", f"    <p>{render_marks(para)}</p>"
 
 def parse_md_tables(path):
     """מפרסר את כל טבלאות ה-markdown בקובץ. מחזיר רשימת (כותרות, שורות)."""
@@ -162,9 +162,11 @@ for i, (title, period, blocks) in enumerate(chapters, 1):
     articles.append(f"""  <article class="chapter" id="{cid}">
     <span class="eyebrow">{eyebrow}</span>
     <span class="inline-edit-status" data-inline-status="{cid}"></span>
-    <div class="chapter-rendered" data-rendered-for="{cid}" data-source-file="{source_file}">
+    <div class="chapter-rendered">
       <h2>{html.escape(title)}</h2>
-{body_html}{notes_html}
+      <div class="chapter-body" contenteditable="true" data-source-file="{source_file}">
+{body_html}
+      </div>{notes_html}
     </div>{grandpa_note}
   </article>""")
 
@@ -522,12 +524,13 @@ page = """<!DOCTYPE html>
     box-shadow: var(--shadow-soft); color: var(--ink-2);
     font-size: .8rem; font-weight: 600; letter-spacing: .05em; margin-bottom: 1rem;
   }
-  /* עריכה ישירה על גבי הטקסט עצמו - בלי כפתור, בלי מצב נפרד, בלי התחברות */
-  .chapter-rendered p, .chapter-rendered blockquote { outline: none; border-radius: 6px; transition: background .15s ease; }
-  .chapter-rendered p:hover, .chapter-rendered blockquote:hover { background: rgba(27,42,65,.035); }
-  .chapter-rendered p:focus, .chapter-rendered blockquote:focus {
-    background: rgba(27,42,65,.05); box-shadow: 0 0 0 1px rgba(27,42,65,.18);
-  }
+  /* עריכה ישירה על גבי הטקסט עצמו - כל הפרק הוא שטח עריכה אחד רציף,
+     בלי כפתור, בלי מצב נפרד, בלי התחברות. אפשר למחוק ציטוט לגמרי,
+     להוסיף פסקה חדשה (Enter), למזג פסקאות (Backspace) וכו'. */
+  .chapter-body { outline: none; border-radius: 10px; transition: box-shadow .15s ease; padding: 2px; }
+  .chapter-body p, .chapter-body blockquote { border-radius: 6px; transition: background .15s ease; }
+  .chapter-body p:hover, .chapter-body blockquote:hover { background: rgba(27,42,65,.035); }
+  .chapter-body:focus-within { box-shadow: 0 0 0 1px rgba(27,42,65,.18); }
   .needs-rework {
     text-decoration: underline; text-decoration-color: #e11d48; text-decoration-thickness: 2px;
     text-underline-offset: 3px; cursor: pointer;
@@ -1003,13 +1006,14 @@ __ARTICLES__
   });
   loadAllNotes();
 
-  // עריכה ישירה על גבי הטקסט - כל פסקה/ציטוט ניתנים לעריכה במקום, בלי כפתור
-  // ובלי מצב נפרד. שמירה אוטומטית (debounce) דרך אותה פונקציה עננית: קוראים
-  // את הקובץ המלא הנוכחי, מחליפים רק את בלוקי הגוף (שומרים כותרת/תקופה/הערות
+  // עריכה ישירה על גבי הטקסט - כל הפרק הוא שטח עריכה רציף אחד: אפשר למחוק
+  // ציטוט לגמרי, להוסיף פסקה חדשה (Enter), למזג פסקאות (Backspace בתחילת
+  // שורה). שמירה אוטומטית (debounce) דרך אותה פונקציה עננית: קוראים את
+  // הקובץ המלא הנוכחי, מחליפים רק את בלוקי הגוף (שומרים כותרת/תקופה/הערות
   // כפי שהיו), וכותבים בחזרה.
-  document.querySelectorAll('.chapter-rendered').forEach(function (rendered) {
-    var cid = rendered.getAttribute('data-rendered-for');
-    var sourceFile = rendered.getAttribute('data-source-file');
+  document.querySelectorAll('.chapter-body').forEach(function (body) {
+    var cid = body.closest('article.chapter').id;
+    var sourceFile = body.getAttribute('data-source-file');
     var statusEl = document.querySelector('[data-inline-status="' + cid + '"]');
     var timer = null;
 
@@ -1028,8 +1032,11 @@ __ARTICLES__
 
     function collectBodyBlocks() {
       var blocks = [];
-      rendered.querySelectorAll(':scope > p, :scope > blockquote').forEach(function (el) {
-        blocks.push({ type: el.tagName === 'BLOCKQUOTE' ? 'quote' : 'p', text: serializeEditable(el) });
+      body.childNodes.forEach(function (el) {
+        if (el.nodeType !== Node.ELEMENT_NODE) return;
+        var text = serializeEditable(el);
+        if (!text) return; // בלוק ריק (למשל ציטוט שנמחק) - פשוט לא נכלל
+        blocks.push({ type: el.tagName === 'BLOCKQUOTE' ? 'quote' : 'p', text: text });
       });
       return blocks;
     }
@@ -1044,10 +1051,10 @@ __ARTICLES__
       }
       var head = lines.slice(0, headEnd).join('\\n');
       var tail = tailStart === -1 ? '' : lines.slice(tailStart).join('\\n');
-      var body = bodyBlocks.map(function (b) {
+      var bodyText = bodyBlocks.map(function (b) {
         return b.type === 'quote' ? '> ' + b.text : b.text;
       }).join('\\n\\n');
-      var result = head + '\\n\\n' + body;
+      var result = head + '\\n\\n' + bodyText;
       if (tail) result += '\\n\\n' + tail;
       return result.trim() + '\\n';
     }
@@ -1066,13 +1073,51 @@ __ARTICLES__
         });
       }).then(function (res) {
         if (!res.ok) throw new Error('http-' + res.status);
-        setStatus(statusEl, 'saved', '✓ נשמר');
+        setStatus(statusEl, 'saved', '✓ נשמר - יופיע באתר תוך כדקה');
       }).catch(function () {
         setStatus(statusEl, 'error', 'השמירה נכשלה - לחצו כאן לנסות שוב');
       });
     }
 
-    rendered.addEventListener('input', function () {
+    // Enter פותח פסקה/ציטוט חדשים במקום שבירת שורה סתמית בתוך הפסקה הנוכחית
+    body.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' || e.shiftKey) return;
+      var sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0) return;
+      e.preventDefault();
+      var range = sel.getRangeAt(0);
+      range.deleteContents();
+      var container = range.startContainer;
+      var block = (container.nodeType === 1 ? container : container.parentElement).closest('p, blockquote');
+      if (!block || block.parentElement !== body) {
+        var p = document.createElement('p');
+        p.appendChild(document.createTextNode('\\u200b'));
+        body.appendChild(p);
+        placeCaret(p, 0);
+        return;
+      }
+      var afterRange = range.cloneRange();
+      afterRange.selectNodeContents(block);
+      afterRange.setStart(range.endContainer, range.endOffset);
+      var afterFragment = afterRange.extractContents();
+      var newBlock = document.createElement(block.tagName === 'BLOCKQUOTE' ? 'blockquote' : 'p');
+      newBlock.appendChild(afterFragment);
+      if (!newBlock.textContent) newBlock.appendChild(document.createTextNode('\\u200b'));
+      block.parentElement.insertBefore(newBlock, block.nextSibling);
+      placeCaret(newBlock, 0);
+      body.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    function placeCaret(el, offset) {
+      var r = document.createRange();
+      var node = el.firstChild || el;
+      r.setStart(node, Math.min(offset, node.textContent ? node.textContent.length : 0));
+      r.collapse(true);
+      var s = window.getSelection();
+      s.removeAllRanges();
+      s.addRange(r);
+    }
+
+    body.addEventListener('input', function () {
       clearTimeout(timer);
       setStatus(statusEl, '', '');
       timer = setTimeout(save, 1800);
@@ -1125,7 +1170,7 @@ __ARTICLES__
     var range = sel.getRangeAt(0);
     var node = range.commonAncestorContainer;
     var el = node.nodeType === 1 ? node : node.parentElement;
-    var host = el && el.closest && el.closest('.chapter-rendered p, .chapter-rendered blockquote');
+    var host = el && el.closest && el.closest('.chapter-body');
     if (!host) return;
     pendingRange = range.cloneRange();
     pendingMark = null;
