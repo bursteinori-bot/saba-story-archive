@@ -45,13 +45,16 @@ def parse_chapter(path):
     return title, period, blocks
 
 def render_marks(text):
-    """ממיר טקסט גולמי (שעשוי להכיל סימוני {{...}} ל'טעון שיפור') ל-HTML,
-    עם escaping תקין, ועוטף כל סימון בתג span אדום-קו-תחתי."""
+    """ממיר טקסט גולמי (שעשוי להכיל סימוני {{טקסט}} או {{טקסט::הערה} ל'טעון
+    שיפור') ל-HTML, עם escaping תקין, ועוטף כל סימון בתג span אדום-קו-תחתי.
+    הערה אופציונלית (אחרי ::) הופכת ל-title שמוצג כ-tooltip."""
     parts = re.split(r"\{\{(.+?)\}\}", text, flags=re.S)
     out = []
     for i, part in enumerate(parts):
         if i % 2 == 1:
-            out.append(f'<span class="needs-rework">{html.escape(part)}</span>')
+            marked, sep, note = part.partition("::")
+            title_attr = f' title="{html.escape(note.strip())}"' if sep else ""
+            out.append(f'<span class="needs-rework"{title_attr}>{html.escape(marked)}</span>')
         else:
             out.append(html.escape(part))
     return "".join(out)
@@ -529,13 +532,26 @@ page = """<!DOCTYPE html>
     text-decoration: underline; text-decoration-color: #e11d48; text-decoration-thickness: 2px;
     text-underline-offset: 3px; cursor: pointer;
   }
-  .mark-rework-btn {
-    position: absolute; z-index: 500;
-    font-family: "Heebo", sans-serif; font-size: .78rem; font-weight: 600;
-    background: #e11d48; color: #fff; border: none; border-radius: 999px;
-    padding: 6px 14px; cursor: pointer; box-shadow: 0 6px 16px rgba(225,29,72,.35);
+  .mark-rework-popover {
+    position: absolute; z-index: 500; display: flex; gap: 6px; align-items: center;
+    background: #fff; border-radius: 12px; padding: 7px 8px;
+    box-shadow: 0 10px 28px rgba(225,29,72,.28), 0 0 0 1.5px #e11d48;
   }
-  .mark-rework-btn[hidden] { display: none; }
+  .mark-rework-popover[hidden] { display: none; }
+  .mark-rework-input {
+    font-family: "Heebo", sans-serif; font-size: .82rem; color: var(--ink);
+    border: 1px solid rgba(27,42,65,.15); border-radius: 8px;
+    padding: 6px 10px; width: 220px; outline: none;
+  }
+  .mark-rework-input:focus { border-color: #e11d48; }
+  .mark-rework-actions { display: flex; gap: 4px; }
+  .mark-rework-actions button {
+    font-family: "Heebo", sans-serif; font-size: .78rem; font-weight: 600;
+    border: none; border-radius: 999px; padding: 6px 12px; cursor: pointer; white-space: nowrap;
+  }
+  .mark-rework-confirm { background: #e11d48; color: #fff; }
+  .mark-rework-remove { background: rgba(27,42,65,.07); color: var(--ink-2); }
+  .mark-rework-remove[hidden] { display: none; }
   .inline-edit-status {
     display: inline-block; margin-inline-start: .6rem;
     font-family: "Heebo", sans-serif; font-size: .78rem; color: var(--ink-3); vertical-align: middle;
@@ -1001,7 +1017,8 @@ __ARTICLES__
       var out = '';
       el.childNodes.forEach(function (node) {
         if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('needs-rework')) {
-          out += '{{' + node.textContent + '}}';
+          var note = node.getAttribute('title');
+          out += '{{' + node.textContent + (note ? '::' + note : '') + '}}';
         } else {
           out += node.textContent;
         }
@@ -1067,50 +1084,94 @@ __ARTICLES__
     }
   });
 
-  // סימון "טעון שיפור": בוחרים טקסט בתוך פסקה, מופיע כפתור אדום, לוחצים
-  // ומקבלים קו תחתון אדום. לחיצה על טקסט מסומן (בלי בחירה) מסירה את הסימון.
-  var markBtn = document.createElement('button');
-  markBtn.type = 'button';
-  markBtn.className = 'mark-rework-btn';
-  markBtn.textContent = 'סמן לשיפור';
-  markBtn.hidden = true;
-  document.body.appendChild(markBtn);
+  // סימון "טעון שיפור": בוחרים טקסט בתוך פסקה, נפתח פופאובר אדום עם אפשרות
+  // להוסיף הערה קצרה (לא חובה) על מה בדיוק צריך לשפר. הטקסט המסומן מקבל
+  // קו תחתון אדום, וההערה מוצגת כ-tooltip במעבר עכבר. לחיצה על טקסט מסומן
+  // (בלי בחירה חדשה) פותחת את אותו פופאובר לעריכת ההערה או הסרת הסימון.
+  var markPopover = document.createElement('div');
+  markPopover.className = 'mark-rework-popover';
+  markPopover.hidden = true;
+  markPopover.innerHTML =
+    '<input type="text" class="mark-rework-input" placeholder="מה צריך לשפר כאן? (לא חובה)">' +
+    '<div class="mark-rework-actions">' +
+    '<button type="button" class="mark-rework-confirm">סמן</button>' +
+    '<button type="button" class="mark-rework-remove" hidden>הסר סימון</button>' +
+    '</div>';
+  document.body.appendChild(markPopover);
+  var markInput = markPopover.querySelector('.mark-rework-input');
+  var markConfirmBtn = markPopover.querySelector('.mark-rework-confirm');
+  var markRemoveBtn = markPopover.querySelector('.mark-rework-remove');
   var pendingRange = null;
+  var pendingMark = null;
 
-  document.addEventListener('mouseup', function () {
+  function openPopoverAt(rect, existingNote) {
+    markPopover.hidden = false;
+    markPopover.style.top = (window.scrollY + rect.top - 74) + 'px';
+    markPopover.style.left = (window.scrollX + rect.left) + 'px';
+    markInput.value = existingNote || '';
+    markRemoveBtn.hidden = existingNote === undefined;
+    setTimeout(function () { markInput.focus(); }, 0);
+  }
+  function closePopover() {
+    markPopover.hidden = true;
+    pendingRange = null;
+    pendingMark = null;
+  }
+
+  document.addEventListener('mouseup', function (e) {
+    if (markPopover.contains(e.target)) return;
     var sel = window.getSelection();
-    if (!sel || sel.isCollapsed || sel.rangeCount === 0) { markBtn.hidden = true; return; }
+    if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
     var range = sel.getRangeAt(0);
     var node = range.commonAncestorContainer;
     var el = node.nodeType === 1 ? node : node.parentElement;
     var host = el && el.closest && el.closest('.chapter-rendered p, .chapter-rendered blockquote');
-    if (!host) { markBtn.hidden = true; return; }
-    var rect = range.getBoundingClientRect();
-    markBtn.hidden = false;
-    markBtn.style.top = (window.scrollY + rect.top - 38) + 'px';
-    markBtn.style.left = (window.scrollX + rect.left) + 'px';
+    if (!host) return;
     pendingRange = range.cloneRange();
+    pendingMark = null;
+    openPopoverAt(range.getBoundingClientRect());
   });
-  markBtn.addEventListener('mousedown', function (e) { e.preventDefault(); });
-  markBtn.addEventListener('click', function () {
-    if (!pendingRange) return;
-    try {
-      var span = document.createElement('span');
-      span.className = 'needs-rework';
-      pendingRange.surroundContents(span);
-      span.dispatchEvent(new Event('input', { bubbles: true }));
-    } catch (e) { /* בחירה שחוצה כמה אלמנטים - מדלגים */ }
-    markBtn.hidden = true;
+  markConfirmBtn.addEventListener('click', function () {
+    var note = markInput.value.trim();
+    if (pendingMark) {
+      if (note) pendingMark.title = note; else pendingMark.removeAttribute('title');
+      pendingMark.dispatchEvent(new Event('input', { bubbles: true }));
+    } else if (pendingRange) {
+      try {
+        var span = document.createElement('span');
+        span.className = 'needs-rework';
+        if (note) span.title = note;
+        pendingRange.surroundContents(span);
+        span.dispatchEvent(new Event('input', { bubbles: true }));
+      } catch (e) { /* בחירה שחוצה כמה אלמנטים - מדלגים */ }
+    }
     window.getSelection().removeAllRanges();
+    closePopover();
+  });
+  markRemoveBtn.addEventListener('click', function () {
+    if (pendingMark) {
+      var parent = pendingMark.parentNode;
+      while (pendingMark.firstChild) parent.insertBefore(pendingMark.firstChild, pendingMark);
+      parent.removeChild(pendingMark);
+      parent.normalize();
+      parent.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    closePopover();
+  });
+  markInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); markConfirmBtn.click(); }
+    else if (e.key === 'Escape') { closePopover(); }
   });
   document.addEventListener('click', function (e) {
     var mark = e.target.closest('.needs-rework');
     if (mark && window.getSelection().isCollapsed) {
-      var parent = mark.parentNode;
-      while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
-      parent.removeChild(mark);
-      parent.normalize();
-      parent.dispatchEvent(new Event('input', { bubbles: true }));
+      pendingMark = mark;
+      pendingRange = null;
+      openPopoverAt(mark.getBoundingClientRect(), mark.getAttribute('title') || '');
+      return;
+    }
+    if (!markPopover.hidden && !markPopover.contains(e.target) && !e.target.closest('.needs-rework')) {
+      closePopover();
     }
   });
 })();
