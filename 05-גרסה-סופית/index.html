@@ -145,6 +145,17 @@
     text-decoration: underline; text-decoration-color: #e11d48; text-decoration-thickness: 2px;
     text-underline-offset: 3px; cursor: pointer;
   }
+  .para-flag-btn {
+    position: absolute; z-index: 400;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: #fff; border: 1.5px solid #e11d48; color: #e11d48;
+    font-size: .85rem; line-height: 1; cursor: pointer;
+    box-shadow: 0 4px 10px rgba(225,29,72,.25);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .1s ease;
+  }
+  .para-flag-btn:hover { transform: scale(1.12); }
+  .para-flag-btn[hidden] { display: none; }
   .mark-rework-popover {
     position: absolute; z-index: 500; display: flex; gap: 6px; align-items: center;
     background: #fff; border-radius: 12px; padding: 7px 8px;
@@ -1481,10 +1492,11 @@
     }
   });
 
-  // סימון "טעון שיפור": בוחרים טקסט בתוך פסקה, נפתח פופאובר אדום עם אפשרות
-  // להוסיף הערה קצרה (לא חובה) על מה בדיוק צריך לשפר. הטקסט המסומן מקבל
-  // קו תחתון אדום, וההערה מוצגת כ-tooltip במעבר עכבר. לחיצה על טקסט מסומן
-  // (בלי בחירה חדשה) פותחת את אותו פופאובר לעריכת ההערה או הסרת הסימון.
+  // סימון "טעון שיפור": מרחפים מעל פסקה, מופיע דגל קטן בפינה שלה, לחיצה
+  // עליו מסמנת את כל הפסקה (לא דורש גרירה מדויקת לבחירת טקסט - קשה מדי
+  // לבצע בדיוק). נפתח פופאובר אדום עם אפשרות להוסיף הערה קצרה (לא חובה).
+  // לחיצה על פסקה שכבר מסומנת פותחת את אותו פופאובר לעריכת ההערה או
+  // הסרת הסימון.
   var markPopover = document.createElement('div');
   markPopover.className = 'mark-rework-popover';
   markPopover.hidden = true;
@@ -1516,23 +1528,58 @@
   }
 
   var justOpenedPopover = false;
-  document.addEventListener('mouseup', function (e) {
-    if (markPopover.contains(e.target)) return;
-    var sel = window.getSelection();
-    if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
-    var range = sel.getRangeAt(0);
-    var node = range.commonAncestorContainer;
-    var el = node.nodeType === 1 ? node : node.parentElement;
-    var host = el && el.closest && el.closest('.chapter-body');
-    if (!host) return;
-    pendingRange = range.cloneRange();
-    pendingMark = null;
-    openPopoverAt(range.getBoundingClientRect());
-    // דפדפנים מריצים click מיד אחרי mouseup גם כשזו בחירה בגרירה, לא
-    // הקלקה רגילה - בלי הדגל הזה ה-click הזה נתפס כ"קליק מחוץ לפופאובר"
-    // וסוגר אותו באותו רגע שהוא נפתח, לפני שהמשתמש בכלל מספיק לראות אותו.
-    justOpenedPopover = true;
+
+  // דגל צף אחד שעוקב אחרי הפסקה שהעכבר מרחף מעליה כרגע - נמנעים מלהזריק
+  // כפתור לכל פסקה בנפרד כדי לא להסתבך עם פיצול/מיזוג פסקאות בעריכה.
+  var flagBtn = document.createElement('button');
+  flagBtn.type = 'button';
+  flagBtn.className = 'para-flag-btn';
+  flagBtn.title = 'סמן פסקה זו לשיפור';
+  flagBtn.textContent = '🚩';
+  flagBtn.hidden = true;
+  document.body.appendChild(flagBtn);
+  var flagTargetBlock = null;
+
+  function wholeParagraphMark(block) {
+    var marks = block.querySelectorAll(':scope > .needs-rework');
+    if (marks.length !== 1) return null;
+    return marks[0].textContent.trim() === block.textContent.trim() ? marks[0] : null;
+  }
+  function positionFlagBtn(block) {
+    var rect = block.getBoundingClientRect();
+    flagTargetBlock = block;
+    flagBtn.hidden = false;
+    flagBtn.style.top = (window.scrollY + rect.top - 6) + 'px';
+    flagBtn.style.left = (window.scrollX + rect.right - 26) + 'px';
+  }
+  document.querySelectorAll('.chapter-body').forEach(function (cb) {
+    cb.addEventListener('mouseover', function (e) {
+      var block = e.target.closest('p, blockquote');
+      if (block && block.parentElement === cb) positionFlagBtn(block);
+    });
+    cb.addEventListener('mouseleave', function () {
+      setTimeout(function () { if (!flagBtn.matches(':hover')) flagBtn.hidden = true; }, 60);
+    });
   });
+  flagBtn.addEventListener('mouseleave', function () { flagBtn.hidden = true; });
+  flagBtn.addEventListener('click', function () {
+    if (!flagTargetBlock) return;
+    var existing = wholeParagraphMark(flagTargetBlock);
+    if (existing) {
+      pendingMark = existing;
+      pendingRange = null;
+      openPopoverAt(existing.getBoundingClientRect(), existing.getAttribute('title') || '');
+    } else {
+      var range = document.createRange();
+      range.selectNodeContents(flagTargetBlock);
+      pendingRange = range;
+      pendingMark = null;
+      openPopoverAt(flagTargetBlock.getBoundingClientRect());
+    }
+    justOpenedPopover = true;
+    flagBtn.hidden = true;
+  });
+
   markConfirmBtn.addEventListener('click', function () {
     var note = markInput.value.trim();
     if (pendingMark) {

@@ -136,6 +136,17 @@
     text-decoration: underline; text-decoration-color: #e11d48; text-decoration-thickness: 2px;
     text-underline-offset: 3px; cursor: pointer;
   }
+  .para-flag-btn {
+    position: absolute; z-index: 400;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: #fff; border: 1.5px solid #e11d48; color: #e11d48;
+    font-size: .85rem; line-height: 1; cursor: pointer;
+    box-shadow: 0 4px 10px rgba(225,29,72,.25);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .1s ease;
+  }
+  .para-flag-btn:hover { transform: scale(1.12); }
+  .para-flag-btn[hidden] { display: none; }
   .mark-rework-popover {
     position: absolute; z-index: 500; display: flex; gap: 6px; align-items: center;
     background: #fff; border-radius: 12px; padding: 7px 8px;
