@@ -44,11 +44,23 @@ def parse_chapter(path):
     blocks = [b.strip() for b in re.split(r"\n\s*\n", body) if b.strip()]
     return title, period, blocks
 
+def render_marks(text):
+    """ממיר טקסט גולמי (שעשוי להכיל סימוני {{...}} ל'טעון שיפור') ל-HTML,
+    עם escaping תקין, ועוטף כל סימון בתג span אדום-קו-תחתי."""
+    parts = re.split(r"\{\{(.+?)\}\}", text, flags=re.S)
+    out = []
+    for i, part in enumerate(parts):
+        if i % 2 == 1:
+            out.append(f'<span class="needs-rework">{html.escape(part)}</span>')
+        else:
+            out.append(html.escape(part))
+    return "".join(out)
+
 def render_block(b):
     """Returns (kind, html) where kind is 'body' or 'note'."""
     if b.startswith(">"):
         quote = " ".join(ln.lstrip("> ").strip() for ln in b.split("\n"))
-        return "body", f"    <blockquote>{html.escape(quote)}</blockquote>"
+        return "body", f'    <blockquote contenteditable="true">{render_marks(quote)}</blockquote>'
     m = re.match(r"^\*\*הערת רקע היסטורי:\*\*\s*(.*)$", b, re.S)
     if m:
         return "note", ('    <div class="historical-note"><strong>הערת רקע היסטורי</strong>'
@@ -60,7 +72,7 @@ def render_block(b):
     para = " ".join(ln.strip() for ln in b.split("\n"))
     # strip markdown bold/italic markers for plain paragraphs
     para = re.sub(r"\*\*(.+?)\*\*", r"\1", para)
-    return "body", f"    <p>{html.escape(para)}</p>"
+    return "body", f'    <p contenteditable="true">{render_marks(para)}</p>'
 
 def parse_md_tables(path):
     """מפרסר את כל טבלאות ה-markdown בקובץ. מחזיר רשימת (כותרות, שורות)."""
@@ -146,19 +158,10 @@ for i, (title, period, blocks) in enumerate(chapters, 1):
     </div>"""
     articles.append(f"""  <article class="chapter" id="{cid}">
     <span class="eyebrow">{eyebrow}</span>
-    <button type="button" class="chapter-edit-toggle" data-edit-for="{cid}" title="לערוך את הפרק הזה">✎ עריכה</button>
-    <div class="chapter-rendered" data-rendered-for="{cid}">
+    <span class="inline-edit-status" data-inline-status="{cid}"></span>
+    <div class="chapter-rendered" data-rendered-for="{cid}" data-source-file="{source_file}">
       <h2>{html.escape(title)}</h2>
 {body_html}{notes_html}
-    </div>
-    <div class="chapter-edit-panel" data-edit-panel="{cid}" hidden>
-      <p class="chapter-edit-hint">עריכה ישירה של טקסט הפרק (בפורמט Markdown הפשוט שלנו - שורות ריקות מפרידות בין פסקאות). השינוי יופיע באתר תוך כדקה מהשמירה.</p>
-      <textarea class="chapter-edit-textarea" data-edit-textarea="{cid}" data-source-file="{source_file}">טוען...</textarea>
-      <div class="chapter-edit-actions">
-        <button type="button" class="chapter-edit-save" data-edit-save="{cid}">שמור</button>
-        <button type="button" class="chapter-edit-cancel" data-edit-cancel="{cid}">ביטול</button>
-      </div>
-      <div class="chapter-edit-status" data-edit-status="{cid}"></div>
     </div>{grandpa_note}
   </article>""")
 
@@ -516,38 +519,30 @@ page = """<!DOCTYPE html>
     box-shadow: var(--shadow-soft); color: var(--ink-2);
     font-size: .8rem; font-weight: 600; letter-spacing: .05em; margin-bottom: 1rem;
   }
-  /* עריכה ישירה של טקסט הפרק - בלי שום התחברות */
-  .chapter-edit-toggle {
-    position: absolute; top: 1.6rem; inset-inline-end: 1.8rem;
+  /* עריכה ישירה על גבי הטקסט עצמו - בלי כפתור, בלי מצב נפרד, בלי התחברות */
+  .chapter-rendered p, .chapter-rendered blockquote { outline: none; border-radius: 6px; transition: background .15s ease; }
+  .chapter-rendered p:hover, .chapter-rendered blockquote:hover { background: rgba(27,42,65,.035); }
+  .chapter-rendered p:focus, .chapter-rendered blockquote:focus {
+    background: rgba(27,42,65,.05); box-shadow: 0 0 0 1px rgba(27,42,65,.18);
+  }
+  .needs-rework {
+    text-decoration: underline; text-decoration-color: #e11d48; text-decoration-thickness: 2px;
+    text-underline-offset: 3px; cursor: pointer;
+  }
+  .mark-rework-btn {
+    position: absolute; z-index: 500;
     font-family: "Heebo", sans-serif; font-size: .78rem; font-weight: 600;
-    color: var(--ink-2); background: var(--glass-strong);
-    border: 1px solid var(--glass-border); border-radius: 999px;
-    padding: 5px 14px; cursor: pointer; box-shadow: var(--shadow-soft);
+    background: #e11d48; color: #fff; border: none; border-radius: 999px;
+    padding: 6px 14px; cursor: pointer; box-shadow: 0 6px 16px rgba(225,29,72,.35);
   }
-  .chapter-edit-toggle:hover { color: var(--ink); }
-  .chapter-edit-panel[hidden] { display: none; }
-  .chapter-edit-hint {
-    font-family: "Heebo", sans-serif; font-size: .82rem; color: var(--ink-3);
-    line-height: 1.7; margin: 0 0 .8rem;
+  .mark-rework-btn[hidden] { display: none; }
+  .inline-edit-status {
+    display: inline-block; margin-inline-start: .6rem;
+    font-family: "Heebo", sans-serif; font-size: .78rem; color: var(--ink-3); vertical-align: middle;
   }
-  .chapter-edit-textarea {
-    width: 100%; min-height: 360px; padding: 1.1rem 1.3rem;
-    background: rgba(255,255,255,.7); border: 1px solid var(--glass-border);
-    border-radius: 14px; font-family: "Frank Ruhl Libre", serif; font-size: 1.05rem;
-    line-height: 1.8; color: var(--ink); resize: vertical; box-sizing: border-box;
-  }
-  .chapter-edit-textarea:focus { border-color: rgba(27,42,65,.35); background: #fff; outline: none; }
-  .chapter-edit-actions { display: flex; gap: .6rem; margin-top: .9rem; }
-  .chapter-edit-actions button {
-    font-family: "Heebo", sans-serif; font-size: .85rem; font-weight: 600;
-    padding: 8px 20px; border-radius: 999px; cursor: pointer; border: none;
-  }
-  .chapter-edit-save { background: var(--ink); color: #fff; }
-  .chapter-edit-cancel { background: rgba(27,42,65,.07); color: var(--ink-2); }
-  .chapter-edit-status { min-height: 1.2em; margin-top: .6rem; font-size: .8rem; color: var(--ink-3); }
-  .chapter-edit-status.saving { color: var(--ink-3); }
-  .chapter-edit-status.saved { color: #2f7a4d; }
-  .chapter-edit-status.error { color: #b3432b; }
+  .inline-edit-status.saving { color: var(--ink-3); }
+  .inline-edit-status.saved { color: #2f7a4d; }
+  .inline-edit-status.error { color: #b3432b; cursor: pointer; text-decoration: underline; }
   article.chapter h2 { font-weight: 800; font-size: 1.9rem; color: var(--ink); margin: 0 0 1.8rem; }
   article.chapter p {
     font-family: "Frank Ruhl Libre", serif; font-size: 1.2rem;
@@ -941,7 +936,8 @@ __ARTICLES__
   function setStatus(el, kind, text) {
     if (!el) return;
     el.textContent = text;
-    el.className = 'grandpa-note-status' + (kind ? ' ' + kind : '');
+    var base = el.className.replace(/\s*(saving|saved|error)\\b/g, '').trim();
+    el.className = base + (kind ? ' ' + kind : '');
   }
 
   function saveNote(chapterId, text, statusEl) {
@@ -991,88 +987,131 @@ __ARTICLES__
   });
   loadAllNotes();
 
-  // עריכה ישירה של טקסט הפרק (Markdown גולמי), דרך אותה פונקציה עננית
-  function escapeHtml(s) {
-    var div = document.createElement('div');
-    div.textContent = s;
-    return div.innerHTML;
-  }
+  // עריכה ישירה על גבי הטקסט - כל פסקה/ציטוט ניתנים לעריכה במקום, בלי כפתור
+  // ובלי מצב נפרד. שמירה אוטומטית (debounce) דרך אותה פונקציה עננית: קוראים
+  // את הקובץ המלא הנוכחי, מחליפים רק את בלוקי הגוף (שומרים כותרת/תקופה/הערות
+  // כפי שהיו), וכותבים בחזרה.
+  document.querySelectorAll('.chapter-rendered').forEach(function (rendered) {
+    var cid = rendered.getAttribute('data-rendered-for');
+    var sourceFile = rendered.getAttribute('data-source-file');
+    var statusEl = document.querySelector('[data-inline-status="' + cid + '"]');
+    var timer = null;
 
-  // תצוגה מקדימה מיידית בצד הלקוח - לא זהה ב-100% לעיצוב הסופי (למשל
-  // בלוקים של הערת רקע היסטורי/שאלות פתוחות לא מוצגים כאן), אבל נותנת
-  // משוב מיידי לפני שהאתר נבנה מחדש בפועל תוך כדקה.
-  function quickRenderChapter(rawMd) {
-    var lines = rawMd.replace(/^\s+/, '').split('\\n');
-    var title = (lines[0] || '').replace(/^#\s*/, '');
-    var bodyStart = 1;
-    if (lines[1] && /^_.*_$/.test(lines[1].trim())) bodyStart = 2;
-    var body = lines.slice(bodyStart).join('\\n');
-    var blocks = body.split(/\\n\s*\\n/).filter(function (b) { return b.trim(); });
-    var out = '<h2>' + escapeHtml(title) + '</h2>';
-    blocks.forEach(function (b) {
-      b = b.trim();
-      if (b.charAt(0) === '>') {
-        out += '<blockquote>' + escapeHtml(b.replace(/^>\s?/gm, '').replace(/\\n/g, ' ')) + '</blockquote>';
-      } else if (/^\*\*(הערת רקע היסטורי|שאלות פתוחות)/.test(b)) {
-        // מוצג כרגיל אחרי הבנייה המחדש הבאה
-      } else {
-        out += '<p>' + escapeHtml(b.replace(/\\n/g, ' ')) + '</p>';
-      }
-    });
-    return out;
-  }
-
-  document.querySelectorAll('.chapter-edit-toggle').forEach(function (btn) {
-    var cid = btn.getAttribute('data-edit-for');
-    var rendered = document.querySelector('[data-rendered-for="' + cid + '"]');
-    var panel = document.querySelector('[data-edit-panel="' + cid + '"]');
-    var textarea = document.querySelector('[data-edit-textarea="' + cid + '"]');
-    var statusEl = document.querySelector('[data-edit-status="' + cid + '"]');
-    var sourceFile = textarea.getAttribute('data-source-file');
-    var loaded = false;
-
-    function openEdit() {
-      rendered.hidden = true;
-      panel.hidden = false;
-      btn.textContent = '✕ סגירה';
-      if (!loaded) {
-        textarea.value = 'טוען...';
-        fetch(WORKER_URL + '?file=' + encodeURIComponent(sourceFile)).then(function (res) {
-          if (!res.ok) throw new Error('http-' + res.status);
-          return res.json();
-        }).then(function (data) {
-          textarea.value = data.content;
-          loaded = true;
-        }).catch(function () {
-          textarea.value = '';
-          setStatus(statusEl, 'error', 'טעינת הטקסט נכשלה - נסו לסגור ולפתוח שוב');
-        });
-      }
+    function serializeEditable(el) {
+      var out = '';
+      el.childNodes.forEach(function (node) {
+        if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('needs-rework')) {
+          out += '{{' + node.textContent + '}}';
+        } else {
+          out += node.textContent;
+        }
+      });
+      return out.trim();
     }
-    function closeEdit() {
-      rendered.hidden = false;
-      panel.hidden = true;
-      btn.textContent = '✎ עריכה';
+
+    function collectBodyBlocks() {
+      var blocks = [];
+      rendered.querySelectorAll(':scope > p, :scope > blockquote').forEach(function (el) {
+        blocks.push({ type: el.tagName === 'BLOCKQUOTE' ? 'quote' : 'p', text: serializeEditable(el) });
+      });
+      return blocks;
     }
-    btn.addEventListener('click', function () {
-      if (panel.hidden) openEdit(); else closeEdit();
-    });
-    panel.querySelector('.chapter-edit-cancel').addEventListener('click', closeEdit);
-    panel.querySelector('.chapter-edit-save').addEventListener('click', function () {
+
+    function spliceChapterFile(rawFullText, bodyBlocks) {
+      var lines = rawFullText.replace(/^\s+/, '').split('\\n');
+      var headEnd = 1;
+      if (lines[1] && /^_.*_$/.test(lines[1].trim())) headEnd = 2;
+      var tailStart = -1;
+      for (var i = headEnd; i < lines.length; i++) {
+        if (/^\*\*(הערת רקע היסטורי|שאלות פתוחות)/.test(lines[i].trim())) { tailStart = i; break; }
+      }
+      var head = lines.slice(0, headEnd).join('\\n');
+      var tail = tailStart === -1 ? '' : lines.slice(tailStart).join('\\n');
+      var body = bodyBlocks.map(function (b) {
+        return b.type === 'quote' ? '> ' + b.text : b.text;
+      }).join('\\n\\n');
+      var result = head + '\\n\\n' + body;
+      if (tail) result += '\\n\\n' + tail;
+      return result.trim() + '\\n';
+    }
+
+    function save() {
       setStatus(statusEl, 'saving', 'שומר...');
-      fetch(WORKER_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ kind: 'chapter', file: sourceFile, content: textarea.value })
+      fetch(WORKER_URL + '?file=' + encodeURIComponent(sourceFile)).then(function (res) {
+        if (!res.ok) throw new Error('http-' + res.status);
+        return res.json();
+      }).then(function (data) {
+        var updated = spliceChapterFile(data.content, collectBodyBlocks());
+        return fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ kind: 'chapter', file: sourceFile, content: updated })
+        });
       }).then(function (res) {
         if (!res.ok) throw new Error('http-' + res.status);
-        setStatus(statusEl, 'saved', '✓ נשמר - האתר יתעדכן תוך כדקה');
-        rendered.innerHTML = quickRenderChapter(textarea.value);
-        closeEdit();
+        setStatus(statusEl, 'saved', '✓ נשמר');
       }).catch(function () {
-        setStatus(statusEl, 'error', 'השמירה נכשלה - נסו שוב');
+        setStatus(statusEl, 'error', 'השמירה נכשלה - לחצו כאן לנסות שוב');
       });
+    }
+
+    rendered.addEventListener('input', function () {
+      clearTimeout(timer);
+      setStatus(statusEl, '', '');
+      timer = setTimeout(save, 1800);
     });
+    if (statusEl) {
+      statusEl.addEventListener('click', function () {
+        if (statusEl.classList.contains('error')) save();
+      });
+    }
+  });
+
+  // סימון "טעון שיפור": בוחרים טקסט בתוך פסקה, מופיע כפתור אדום, לוחצים
+  // ומקבלים קו תחתון אדום. לחיצה על טקסט מסומן (בלי בחירה) מסירה את הסימון.
+  var markBtn = document.createElement('button');
+  markBtn.type = 'button';
+  markBtn.className = 'mark-rework-btn';
+  markBtn.textContent = 'סמן לשיפור';
+  markBtn.hidden = true;
+  document.body.appendChild(markBtn);
+  var pendingRange = null;
+
+  document.addEventListener('mouseup', function () {
+    var sel = window.getSelection();
+    if (!sel || sel.isCollapsed || sel.rangeCount === 0) { markBtn.hidden = true; return; }
+    var range = sel.getRangeAt(0);
+    var node = range.commonAncestorContainer;
+    var el = node.nodeType === 1 ? node : node.parentElement;
+    var host = el && el.closest && el.closest('.chapter-rendered p, .chapter-rendered blockquote');
+    if (!host) { markBtn.hidden = true; return; }
+    var rect = range.getBoundingClientRect();
+    markBtn.hidden = false;
+    markBtn.style.top = (window.scrollY + rect.top - 38) + 'px';
+    markBtn.style.left = (window.scrollX + rect.left) + 'px';
+    pendingRange = range.cloneRange();
+  });
+  markBtn.addEventListener('mousedown', function (e) { e.preventDefault(); });
+  markBtn.addEventListener('click', function () {
+    if (!pendingRange) return;
+    try {
+      var span = document.createElement('span');
+      span.className = 'needs-rework';
+      pendingRange.surroundContents(span);
+      span.dispatchEvent(new Event('input', { bubbles: true }));
+    } catch (e) { /* בחירה שחוצה כמה אלמנטים - מדלגים */ }
+    markBtn.hidden = true;
+    window.getSelection().removeAllRanges();
+  });
+  document.addEventListener('click', function (e) {
+    var mark = e.target.closest('.needs-rework');
+    if (mark && window.getSelection().isCollapsed) {
+      var parent = mark.parentNode;
+      while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+      parent.removeChild(mark);
+      parent.normalize();
+      parent.dispatchEvent(new Event('input', { bubbles: true }));
+    }
   });
 })();
 </script>
