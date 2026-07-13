@@ -272,6 +272,7 @@
     pendingMark = null;
   }
 
+  var justOpenedPopover = false;
   document.addEventListener('mouseup', function (e) {
     if (markPopover.contains(e.target)) return;
     var sel = window.getSelection();
@@ -284,6 +285,10 @@
     pendingRange = range.cloneRange();
     pendingMark = null;
     openPopoverAt(range.getBoundingClientRect());
+    // דפדפנים מריצים click מיד אחרי mouseup גם כשזו בחירה בגרירה, לא
+    // הקלקה רגילה - בלי הדגל הזה ה-click הזה נתפס כ"קליק מחוץ לפופאובר"
+    // וסוגר אותו באותו רגע שהוא נפתח, לפני שהמשתמש בכלל מספיק לראות אותו.
+    justOpenedPopover = true;
   });
   markConfirmBtn.addEventListener('click', function () {
     var note = markInput.value.trim();
@@ -317,6 +322,7 @@
     else if (e.key === 'Escape') { closePopover(); }
   });
   document.addEventListener('click', function (e) {
+    if (justOpenedPopover) { justOpenedPopover = false; return; }
     var mark = e.target.closest('.needs-rework');
     if (mark && window.getSelection().isCollapsed) {
       pendingMark = mark;
